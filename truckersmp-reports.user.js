@@ -24,8 +24,8 @@ var now = moment();
 var date_buttons = '<br>' +
     '<button type="button" class="btn btn-default plusdate" data-plus="1day">+1 day</button>' +
     '<button type="button" class="btn btn-default plusdate" data-plus="3day">+3</button>' +
-    '<button type="button" class="btn btn-primary plusdate" data-plus="1week">+1 week</button>' +
-    '<button type="button" class="btn btn-warning plusdate" data-plus="1month">+1 month</button>' +
+    '<button type="button" class="btn btn-warning plusdate" data-plus="1week">+1 week</button>' +
+    '<button type="button" class="btn btn-danger plusdate" data-plus="1month">+1 month</button>' +
     '<button type="button" class="btn btn-danger plusdate" data-plus="3month">+3</button>' +
     '<button type="button" class="btn btn-xs btn-link plusdate" data-plus="clear">NOW</button>' +
     '<span>Questions - to @cjmaxik in Slack!</span>';
