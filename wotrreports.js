@@ -1,5 +1,6 @@
 // ==UserScript==
 // @name         TruckersMP Reports Improved
+// @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
 // @version      0.9.1
 // @author       CJMAXiK
