@@ -41,7 +41,7 @@ var steamapi = storage.get('SteamApi');
 
 if (steamapi === "Kappa") {
     console.log(":O");
-} else if (steamapi != null && steamapi != "http://steamcommunity.com/dev/apikey") {
+} else if (steamapi !== null && steamapi != "http://steamcommunity.com/dev/apikey") {
     $.ajax({
         url: "http://cjmaxik.ru/useless/steamapi.php?steamapi="+steamapi+"&steam_id="+steam_id,
         method: "GET",
@@ -56,13 +56,14 @@ if (steamapi === "Kappa") {
         var aliases = "";
         for(var key in steam_aliases) {
             aliases += steam_aliases[key].newname + ', ';
-        };
-        var aliases = '<tr><td>Aliases</td><td>'+ aliases +'</td></tr>';
+        }
+        aliases = '<tr><td>Aliases</td><td>'+ aliases +'</td></tr>';
 
         $(steam_link).insertAfter('tr:nth-child(2) > td:nth-child(2) > a');
         $(aliases).insertAfter('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2)');
         $('span#steam_LOL').append(steam_avatar);
     });
+}
 
 // ===== Timing FTW! =====
 $('.plusdate').on("click", function() {
@@ -85,7 +86,7 @@ $('.plusdate').on("click", function() {
         case 'clear':
             now = moment();
             break;
-    };
+    }
     $('#datetimeselect').val(now.format("YYYY/MM/DD HH:mm"));
 });
 
