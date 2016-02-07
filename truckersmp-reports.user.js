@@ -15,7 +15,7 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
-console.log("WoTrMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
+console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 
 // ===== Bootstrapping =====
 var now = moment();
