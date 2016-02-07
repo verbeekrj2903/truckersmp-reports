@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.0.0
+// @version      1.0.1
 // @author       CJMAXiK
 // @match        http://truckersmp.com/en_US/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
@@ -39,7 +39,9 @@ var steam_id = $('input[name="steam_id"]').val();
 var storage = $.localStorage;
 var steamapi = storage.get('SteamApi');
 
-if (steamapi != null && steamapi != "Kappa" && steamapi != "http://steamcommunity.com/dev/apikey" ) {
+if (steamapi === "Kappa") {
+    console.log(":O");
+} else if (steamapi != null && steamapi != "http://steamcommunity.com/dev/apikey") {
     $.ajax({
         url: "http://cjmaxik.ru/useless/steamapi.php?steamapi="+steamapi+"&steam_id="+steam_id,
         method: "GET",
@@ -61,10 +63,6 @@ if (steamapi != null && steamapi != "Kappa" && steamapi != "http://steamcommunit
         $(aliases).insertAfter('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2)');
         $('span#steam_LOL').append(steam_avatar);
     });
-} else {
-    var new_steamapi = prompt("If you want to check Steam names right there, please paste your Steam Web API key now. If you don't, please type \"Kappa\". Copy link here, press Cancel, grab your API Key and BRB!", "http://steamcommunity.com/dev/apikey");
-    storage.set('SteamApi', new_steamapi);
-}
 
 // ===== Timing FTW! =====
 $('.plusdate').on("click", function() {
