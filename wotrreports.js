@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         WoTrMP Reports Improved
+// @name         TruckersMP Reports Improved
 // @namespace    http://truckersmp.com/
 // @version      0.9.1
 // @author       CJMAXiK
@@ -8,7 +8,11 @@
 // @require      http://momentjs.com/downloads/moment.min.js
 // @run-at       document-end
 // @grant        none
+// @copyright    2016, CJMAXiK (http://cjmaxik.ru/)
 // ==/UserScript==
+// ==OpenUserJS==
+// @author       CJMAXiK
+// ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
 console.log("WoTrMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
