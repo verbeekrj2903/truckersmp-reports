@@ -2,10 +2,12 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      0.9.2
+// @version      1.0.0
 // @author       CJMAXiK
 // @match        http://truckersmp.com/en_US/reports/view/*
-// @require      http://momentjs.com/downloads/moment.min.js
+// @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
+// @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-storage-api/1.7.5/jquery.storageapi.min.js
 // @run-at       document-end
 // @grant        none
 // @copyright    2016, CJMAXiK (http://cjmaxik.ru/)
@@ -15,7 +17,7 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
-console.log("WoTrMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
+console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 
 // ===== Bootstrapping =====
 var now = moment();
@@ -23,14 +25,46 @@ var now = moment();
 var date_buttons = '<br>' +
     '<button type="button" class="btn btn-default plusdate" data-plus="1day">+1 day</button>' +
     '<button type="button" class="btn btn-default plusdate" data-plus="3day">+3</button>' +
-    '<button type="button" class="btn btn-primary plusdate" data-plus="1week">+1 week</button>' +
-    '<button type="button" class="btn btn-warning plusdate" data-plus="1month">+1 month</button>' +
+    '<button type="button" class="btn btn-warning plusdate" data-plus="1week">+1 week</button>' +
+    '<button type="button" class="btn btn-danger plusdate" data-plus="1month">+1 month</button>' +
     '<button type="button" class="btn btn-danger plusdate" data-plus="3month">+3</button>' +
     '<button type="button" class="btn btn-xs btn-link plusdate" data-plus="clear">NOW</button>' +
     '<span>Questions - to @cjmaxik in Slack!</span>';
 
 $(date_buttons).insertAfter('label:contains("Time Limited")');
 $('input[id="perma.false"]').prop("checked", true);
+
+// Perpetrator ID, Steam name, avatar & aliases
+var steam_id = $('input[name="steam_id"]').val();
+var storage = $.localStorage;
+var steamapi = storage.get('SteamApi');
+
+if (steamapi != null && steamapi != "Kappa" && steamapi != "http://steamcommunity.com/dev/apikey" ) {
+    $.ajax({
+        url: "http://cjmaxik.ru/useless/steamapi.php?steamapi="+steamapi+"&steam_id="+steam_id,
+        method: "GET",
+        dataType: "JSONP"
+    })
+    .done(function(data, textStatus, jqXNR) {
+        var steam_name = data.response.players[0].personaname;
+        var steam_link = '<span id="steam_LOL"><a href="http://steamcommunity.com/profiles/' + steam_id + '" target="_blank"> - '+ steam_name +'</a></span>';
+        var steam_aliases = data.response.players[0].aliases;
+        var steam_avatar = '<img src="'+ data.response.players[0].avatar + '">';
+
+        var aliases = "";
+        for(var key in steam_aliases) {
+            aliases += steam_aliases[key].newname + ', ';
+        };
+        var aliases = '<tr><td>Aliases</td><td>'+ aliases +'</td></tr>';
+
+        $(steam_link).insertAfter('tr:nth-child(2) > td:nth-child(2) > a');
+        $(aliases).insertAfter('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2)');
+        $('span#steam_LOL').append(steam_avatar);
+    });
+} else {
+    var new_steamapi = prompt("If you want to check Steam names right there, please paste your Steam Web API key now. If you don't, please type \"Kappa\". Copy link here, press Cancel, grab your API Key and BRB!", "http://steamcommunity.com/dev/apikey");
+    storage.set('SteamApi', new_steamapi);
+}
 
 // ===== Timing FTW! =====
 $('.plusdate').on("click", function() {
