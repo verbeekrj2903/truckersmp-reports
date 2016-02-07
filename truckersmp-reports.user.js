@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.0.2
+// @version      1.0.3
 // @author       CJMAXiK
 // @match        http://truckersmp.com/en_US/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
@@ -63,6 +63,9 @@ if (steamapi === "Kappa") {
         $(aliases).insertAfter('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2)');
         $('span#steam_LOL').append(steam_avatar);
     });
+} else {
+    var new_steamapi = prompt("If you want to check Steam names right there, please paste your Steam Web API key now. If you don't, please type \"Kappa\". Copy link here, press Cancel, grab your API Key and BRB!", "http://steamcommunity.com/dev/apikey");
+    storage.set('SteamApi', new_steamapi);
 }
 
 // ===== Timing FTW! =====
