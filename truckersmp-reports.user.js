@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      0.9.1
+// @version      0.9.2
 // @author       CJMAXiK
 // @match        http://truckersmp.com/en_US/reports/view/*
 // @require      http://momentjs.com/downloads/moment.min.js
