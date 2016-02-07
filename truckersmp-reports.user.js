@@ -5,7 +5,6 @@
 // @version      0.9.1
 // @author       CJMAXiK
 // @match        http://truckersmp.com/en_US/reports/view/*
-// @updateURL    http://cjmaxik.ru/useless/wotrreports.js
 // @require      http://momentjs.com/downloads/moment.min.js
 // @run-at       document-end
 // @grant        none
