@@ -5,6 +5,7 @@
 // @version      0.9.2
 // @author       CJMAXiK
 // @match        http://truckersmp.com/en_US/reports/view/*
+// @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
 // @require      http://momentjs.com/downloads/moment.min.js
 // @run-at       document-end
 // @grant        none
