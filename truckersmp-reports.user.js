@@ -74,7 +74,7 @@ if (steamapi === "Kappa") {
         $('span#steam_LOL').append(steam_avatar);
     });
 } else {
-    var new_steamapi = prompt("If you want to check Steam names right there, please paste your Steam Web API key now. If you don't, please type \"Kappa\". Copy link here, press Cancel, grab your API Key and BRB!", "http://steamcommunity.com/dev/apikey");
+    var new_steamapi = prompt("If you want to use Steam integration, please paste your Steam Web API key below. If you don't, please type \"Kappa\". Copy link here, press Cancel, grab your API Key and BRB!", "http://steamcommunity.com/dev/apikey");
     storage.set('SteamApi', new_steamapi);
 }
 
