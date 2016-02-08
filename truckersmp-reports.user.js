@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.0.5
+// @version      1.0.6
 // @author       CJMAXiK
 // @match        http://truckersmp.com/en_US/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
@@ -39,7 +39,7 @@ $('input[id="perma.false"]').prop("checked", true);
 // ===== Links in content =====
 $('.content').each(function(){
     var str = $(this).html();
-    var regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig
+    var regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.\-]*(\?\S+)?)?)?)/ig
     var replaced_text = str.replace(regex, "<a href='$1' target='_blank'>$1</a>");
     $(this).html(replaced_text);
 });
