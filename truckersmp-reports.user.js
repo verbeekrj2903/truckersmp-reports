@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.0.3
+// @version      1.0.5
 // @author       CJMAXiK
 // @match        http://truckersmp.com/en_US/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
@@ -17,7 +17,9 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
+var $version = "1.0.5";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
+$('h1:contains("Reports")').append(" Improved (by @cjmaxik), v" + $version);
 
 // ===== Bootstrapping =====
 var now = moment();
@@ -34,6 +36,14 @@ var date_buttons = '<br>' +
 $(date_buttons).insertAfter('label:contains("Time Limited")');
 $('input[id="perma.false"]').prop("checked", true);
 
+// ===== Links in content =====
+$('.content').each(function(){
+    var str = $(this).html();
+    var regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig
+    var replaced_text = str.replace(regex, "<a href='$1' target='_blank'>$1</a>");
+    $(this).html(replaced_text);
+});
+
 // Perpetrator ID, Steam name, avatar & aliases
 var steam_id = $('input[name="steam_id"]').val();
 var storage = $.localStorage;
@@ -47,7 +57,7 @@ if (steamapi === "Kappa") {
         method: "GET",
         dataType: "JSONP"
     })
-    .done(function(data, textStatus, jqXNR) {
+        .done(function(data, textStatus, jqXNR) {
         var steam_name = data.response.players[0].personaname;
         var steam_link = '<span id="steam_LOL"><a href="http://steamcommunity.com/profiles/' + steam_id + '" target="_blank"> - '+ steam_name +'</a></span>';
         var steam_aliases = data.response.players[0].aliases;
@@ -92,4 +102,3 @@ $('.plusdate').on("click", function() {
     }
     $('#datetimeselect').val(now.format("YYYY/MM/DD HH:mm"));
 });
-
