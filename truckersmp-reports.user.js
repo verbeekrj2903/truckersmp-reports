@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.0.6
+// @version      1.0.7
 // @author       CJMAXiK
 // @match        http://truckersmp.com/en_US/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
@@ -17,7 +17,7 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
-var $version = "1.0.5";
+var $version = "1.0.7";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 $('h1:contains("Reports")').append(" Improved (by @cjmaxik), v" + $version);
 
@@ -30,8 +30,7 @@ var date_buttons = '<br>' +
     '<button type="button" class="btn btn-warning plusdate" data-plus="1week">+1 week</button>' +
     '<button type="button" class="btn btn-danger plusdate" data-plus="1month">+1 month</button>' +
     '<button type="button" class="btn btn-danger plusdate" data-plus="3month">+3</button>' +
-    '<button type="button" class="btn btn-xs btn-link plusdate" data-plus="clear">NOW</button>' +
-    '<span>Questions - to @cjmaxik in Slack!</span>';
+    '<button type="button" class="btn btn-xs btn-link plusdate" data-plus="clear">NOW</button>';
 
 $(date_buttons).insertAfter('label:contains("Time Limited")');
 $('input[id="perma.false"]').prop("checked", true);
@@ -77,6 +76,12 @@ if (steamapi === "Kappa") {
     var new_steamapi = prompt("If you want to use Steam integration, please paste your Steam Web API key below. If you don't, please type \"Kappa\". Copy link here, press Cancel, grab your API Key and BRB!", "http://steamcommunity.com/dev/apikey");
     storage.set('SteamApi', new_steamapi);
 }
+
+var perpetrator = $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2) > td:nth-child(2) > a').attr('href').replace('/user/', '');
+if (perpetrator <= 2300) {
+    var low_id = "<span class=\"badge badge-red\">Low ID!</span>";
+    $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2) > td:nth-child(2)').append(low_id);
+};
 
 // ===== Timing FTW! =====
 $('.plusdate').on("click", function() {
