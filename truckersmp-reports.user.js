@@ -2,13 +2,13 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.1.1
+// @version      1.1.2
 // @author       CJMAXiK
 // @match        http://truckersmp.com/en_US/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-storage-api/1.7.5/jquery.storageapi.min.js
-// @run-at       document-end
+// @run-at       document-idle
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @grant        GM_xmlhttpRequest
@@ -19,9 +19,14 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
-var $version = "1.1.1";
+var $version = "1.1.2";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 $('h1:contains("Reports")').append(" Improved (by @cjmaxik), v" + $version);
+
+GM_setValue("player_data", "");
+GM_setValue("player_success", "");
+GM_setValue("aliases_data", "");
+GM_setValue("aliases_success", "");
 
 // ===== Bootstrapping =====
 var now = moment();
