@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.1.2
+// @version      1.1.3
 // @author       CJMAXiK
 // @match        http://truckersmp.com/en_US/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
@@ -11,6 +11,7 @@
 // @run-at       document-idle
 // @grant        GM_getValue
 // @grant        GM_setValue
+// @grant        GM_deleteValue
 // @grant        GM_xmlhttpRequest
 // @copyright    2016, CJMAXiK (http://cjmaxik.ru/)
 // ==/UserScript==
@@ -19,14 +20,9 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
-var $version = "1.1.2";
+var $version = "1.1.3";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 $('h1:contains("Reports")').append(" Improved (by @cjmaxik), v" + $version);
-
-GM_setValue("player_data", "");
-GM_setValue("player_success", "");
-GM_setValue("aliases_data", "");
-GM_setValue("aliases_success", "");
 
 // ===== Bootstrapping =====
 var now = moment();
@@ -63,38 +59,28 @@ if (steamapi === "Kappa") {
 	    xhr: function(){return new GM_XHR();},
 	    type: 'GET',
 	    success: function(val){
-	        GM_setValue("player_data", val);
-	        GM_setValue("player_success", "1");
+			var player_data = val;
+			var steam_name = player_data.response.players[0].personaname;
+			var steam_link = '<span id="steam_LOL"> aka <a href="http://steamcommunity.com/profiles/' + steam_id + '" target="_blank"><kbd>' + steam_name + '</kbd> <img src="'+ player_data.response.players[0].avatar + '"></a></span>';
+			$(steam_link).insertAfter('tr:nth-child(2) > td:nth-child(2) > a');
+
+			$.ajax({
+		    	url: "http://steamcommunity.com/profiles/" + steam_id + "/ajaxaliases",
+		    	xhr: function(){return new GM_XHR();},
+		    	type: 'GET',
+			    success: function(val){
+					var steam_aliases = GM_getValue("aliases_data");
+					var aliases = "";
+					for(var key in steam_aliases) {
+						aliases += '<kbd>' + steam_aliases[key].newname + '</kbd>   ';
+					}
+					aliases = '<tr><td>Aliases</td><td>'+ aliases +'</td></tr>';
+					$(aliases).insertAfter('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2)');
+				}
+			});
 	    }
 	});
 
-	if (GM_getValue("player_success") == "1") {
-		var player_data = GM_getValue("player_data");
-		var steam_name = player_data.response.players[0].personaname;
-		var steam_link = '<span id="steam_LOL"> aka <a href="http://steamcommunity.com/profiles/' + steam_id + '" target="_blank"><kbd>' + steam_name + '</kbd> <img src="'+ player_data.response.players[0].avatar + '"></a></span>';
-		$(steam_link).insertAfter('tr:nth-child(2) > td:nth-child(2) > a');
-
-		$.ajax({
-	    url: "http://steamcommunity.com/profiles/" + steam_id + "/ajaxaliases",
-	    xhr: function(){return new GM_XHR();},
-	    type: 'GET',
-		    success: function(val){
-		        GM_setValue("aliases_data", val);
-		        GM_setValue("aliases_success", "1");
-		    }
-		});
-
-		if (GM_getValue("aliases_success") == "1") {
-			var steam_aliases = GM_getValue("aliases_data");
-			var aliases = "";
-			for(var key in steam_aliases) {
-				aliases += '<kbd>' + steam_aliases[key].newname + '</kbd>   ';
-			}
-			aliases = '<tr><td>Aliases</td><td>'+ aliases +'</td></tr>';
-			$(aliases).insertAfter('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2)');
-		}
-
-	}
 } else {
 	var new_steamapi = prompt("If you want to use Steam integration, please paste your Steam Web API key below. If you don't, please type \"Kappa\". Copy link here, press Cancel, grab your API Key and BRB!", "http://steamcommunity.com/dev/apikey");
 	storage.set('SteamApi', new_steamapi);
