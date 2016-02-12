@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.0.7
+// @version      1.0.8
 // @author       CJMAXiK
 // @match        http://truckersmp.com/en_US/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
@@ -17,7 +17,7 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
-var $version = "1.0.7";
+var $version = "1.0.8";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 $('h1:contains("Reports")').append(" Improved (by @cjmaxik), v" + $version);
 
@@ -38,7 +38,7 @@ $('input[id="perma.false"]').prop("checked", true);
 // ===== Links in content =====
 $('.content').each(function(){
     var str = $(this).html();
-    var regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.\-]*(\?\S+)?)?)?)/ig
+    var regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.\-]*(\?\S+[^\<\/p\>\n\ ])?)?)?)/ig
     var replaced_text = str.replace(regex, "<a href='$1' target='_blank'>$1</a>");
     $(this).html(replaced_text);
 });
