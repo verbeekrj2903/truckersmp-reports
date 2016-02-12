@@ -97,7 +97,7 @@ if (steamapi === "Kappa") {
 
 var perpetrator = $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2) > td:nth-child(2) > a').attr('href').replace('/user/', '');
 if (perpetrator <= 2300) {
-	var low_id = "<span class=\"badge badge-red\">Low ID!</span>";
+	var low_id = " <span class=\"badge badge-red\">Low ID!</span>";
 	$('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2) > td:nth-child(2)').append(low_id);
 }
 
