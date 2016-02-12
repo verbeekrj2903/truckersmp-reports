@@ -2,9 +2,9 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.1.3
+// @version      1.1.5
 // @author       CJMAXiK
-// @match        http://truckersmp.com/en_US/reports/view/*
+// @match        http://truckersmp.com/*/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-storage-api/1.7.5/jquery.storageapi.min.js
@@ -20,9 +20,9 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
-var $version = "1.1.3";
+var $version = "1.1.5";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
-$('h1:contains("Reports")').append(" Improved (by @cjmaxik), v" + $version);
+$('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + $version + '</span> <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
 
 // ===== Bootstrapping =====
 var now = moment();
@@ -35,13 +35,13 @@ var date_buttons = '<br>' +
 	'<button type="button" class="btn btn-danger plusdate" data-plus="3month">+3</button>' +
 	'<button type="button" class="btn btn-xs btn-link plusdate" data-plus="clear">NOW</button>';
 
-$(date_buttons).insertAfter('label:contains("Time Limited")');
+$(date_buttons).insertAfter('#confirm-accept > div > div > form > div.modal-body > div:nth-child(5) > label:nth-child(4)');
 $('input[id="perma.false"]').prop("checked", true);
 
 // ===== Links in content =====
 $('.content').each(function(){
 	var str = $(this).html();
-	var regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.\-]*(\?\S+[^\<\/p\>\n\ ])?)?)?)/ig;
+	var regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.\-]*(\?\S+[^\<\/(p|td)\>\n\ ])?)?)?)/ig;
 	var replaced_text = str.replace(regex, "<a href='$1' target='_blank'>$1</a>");
 	$(this).html(replaced_text);
 });
@@ -61,7 +61,7 @@ if (steamapi === "Kappa") {
 	    success: function(val){
 			var player_data = val;
 			var steam_name = player_data.response.players[0].personaname;
-			var steam_link = '<span id="steam_LOL"> aka <a href="http://steamcommunity.com/profiles/' + steam_id + '" target="_blank"><kbd>' + steam_name + '</kbd> <img src="'+ player_data.response.players[0].avatar + '"></a></span>';
+			var steam_link = '<span id="steam_LOL"> aka <a href="http://steamcommunity.com/profiles/' + steam_id + '" target="_blank"><kbd>' + steam_name + '</kbd> <img src="'+ player_data.response.players[0].avatar + '" class="img-rounded"></a></span>';
 			$(steam_link).insertAfter('tr:nth-child(2) > td:nth-child(2) > a');
 
 			$.ajax({
@@ -72,10 +72,16 @@ if (steamapi === "Kappa") {
 					var steam_aliases = GM_getValue("aliases_data");
 					var aliases = "";
 					for(var key in steam_aliases) {
-						aliases += '<kbd>' + steam_aliases[key].newname + '</kbd>   ';
+						aliases += '<kbd  data-toggle="tooltip" title="' + steam_aliases[key].timechanged + '">' + steam_aliases[key].newname + '</kbd>   ';
 					}
 					aliases = '<tr><td>Aliases</td><td>'+ aliases +'</td></tr>';
 					$(aliases).insertAfter('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2)');
+
+					// AFTER ALL!!!!!!!
+					$("#loading-spinner").remove();
+					$(function () {
+						$('[data-toggle="tooltip"]').tooltip()
+					})
 				}
 			});
 	    }
@@ -88,7 +94,7 @@ if (steamapi === "Kappa") {
 
 var perpetrator = $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2) > td:nth-child(2) > a').attr('href').replace('/user/', '');
 if (perpetrator <= 2300) {
-	var low_id = " <span class=\"badge badge-red\">Low ID!</span>";
+	var low_id = ' <span class="badge badge-red" data-toggle="tooltip" title="Be careful! Perpetrator ID seems to be an In-Game ID. Double-check Steam aliases!">Low ID!</span>';
 	$('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2) > td:nth-child(2)').append(low_id);
 }
 
@@ -115,6 +121,12 @@ $('.plusdate').on("click", function() {
 			break;
 	}
 	$('#datetimeselect').val(now.format("YYYY/MM/DD HH:mm"));
+});
+
+// ===== Comments Nice Look
+$(".comment > p").each(function(index, el) {
+	$("<hr>").insertAfter(this);
+    $(this).wrap("<blockquote></blockquote>");
 });
 
 function GM_XHR() {
