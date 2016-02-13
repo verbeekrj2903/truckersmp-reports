@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.2.3
+// @version      1.2.4
 // @author       CJMAXiK
 // @match        *://truckersmp.com/*/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
@@ -20,7 +20,7 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
-var $version = "1.2.3";
+var $version = "1.2.4";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 $('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + $version + '</span> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
 
@@ -41,7 +41,7 @@ $('input[id="perma.false"]').prop("checked", true);
 // ===== Links in content =====
 $('.content').each(function(){
     var str = $(this).html();
-    var regex = /((http|https):\/\/(\w{1,}.|)(\w{1,}+).(\w+)\/([^< \s])+)/ig;
+    var regex = /((http|https):\/\/(\w{1,}.|)(\w{1,}).(\w+)\/([^< \s])+)/ig;
     var replaced_text = str.replace(regex, "<a href='$1' target='_blank'>$1</a>");
     $(this).html(replaced_text);
 });
