@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.3.1
+// @version      1.3.2
 // @author       CJMAXiK
 // @match        *://truckersmp.com/*/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
@@ -17,9 +17,9 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
-var $version = "1.3.1";
+var version = "1.3.2";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
-$('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + $version + '</span> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a> <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
+$('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + version + '</span> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected" data-toggle="popover" data-trigger="focus" title="YAY! v.' + version + ' has been deployed!" data-content="Your handy-dandy script just updated! See what you get?"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a> <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
 
 // ===== Bootstrapping =====
 var now = moment();
@@ -71,6 +71,15 @@ $('.content').each(function(){
 var steam_id = $('input[name="steam_id"]').val();
 var storage = $.localStorage;
 var steamapi = storage.get('SteamApi');
+var last_version = storage.get('last_version');
+
+// ===== Versioning =====
+if (version != last_version) {
+    storage.set('last_version', version);
+    $('#version_detected').popover('show');
+} else {
+    storage.set('last_version', version);
+};
 
 // ==== Settings Modal =====
 var settings_modal = '<div class="modal fade ets2mp-modal" id="script-settings" tabindex="-1">' +
