@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.2.8
+// @version      1.3.0
 // @author       CJMAXiK
 // @match        *://truckersmp.com/*/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
@@ -17,7 +17,7 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
-var $version = "1.2.8";
+var $version = "1.3.0";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 $('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + $version + '</span> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
 
@@ -26,14 +26,37 @@ var now = moment();
 
 var date_buttons = '<br>' +
     '<button type="button" class="btn btn-default plusdate" data-plus="1day">+1 day</button>' +
-    '<button type="button" class="btn btn-default plusdate" data-plus="3day">+3</button>' +
-    '<button type="button" class="btn btn-warning plusdate" data-plus="1week">+1 week</button>' +
+    '<button type="button" class="btn btn-default plusdate" data-plus="3day">+3</button>     ' +
+    '<button type="button" class="btn btn-warning plusdate" data-plus="1week">+1 week</button>     ' +
     '<button type="button" class="btn btn-danger plusdate" data-plus="1month">+1 month</button>' +
     '<button type="button" class="btn btn-danger plusdate" data-plus="3month">+3</button>' +
-    '<button type="button" class="btn btn-xs btn-link plusdate" data-plus="clear">NOW</button>';
+    '<button type="button" class="btn btn-xs btn-link plusdate" data-plus="clear">Current time</button>';
+
+var reason_buttons = '<br><div class="btn-group"><a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">Reasons <span class="caret"></span></a>' +
+    '<ul class="dropdown-menu">' +
+    '    <li><a href="#" class="plusreason" data-place="after">Ramming</a></li>' +
+    '    <li><a href="#" class="plusreason" data-place="after">Blocking</a></li>' +
+    '    <li><a href="#" class="plusreason" data-place="after">Wrong Way</a></li>' +
+    '    <li><a href="#" class="plusreason" data-place="after">Insulting</a></li>' +
+    '    <li><a href="#" class="plusreason" data-place="after">Trolling</a></li>' +
+    '    <li><a href="#" class="plusreason" data-place="after">Reckless driving</a></li>' +
+    '</ul></div>' +
+    '     <div class="btn-group"><a class="btn btn-warning dropdown-toggle" data-toggle="dropdown" href="#">Prefixes <span class="caret"></span></a>' +
+    '<ul class="dropdown-menu">' +
+    '    <li><a href="#" class="plusreason" data-place="before">Intentional</a></li>' +
+    '</ul></div>' +
+    '     <div class="btn-group"><a class="btn btn-danger dropdown-toggle" data-toggle="dropdown" href="#">Postfixes <span class="caret"></span></a>' +
+    '<ul class="dropdown-menu">' +
+    '    <li><a href="#" class="plusreason" data-place="after">// 1 m due to history</a></li>' +
+    '    <li><a href="#" class="plusreason" data-place="after">// 3 m due to history</a></li>' +
+    '    <li><a href="#" class="plusreason" data-place="after">// Perma due to history</a></li>' +
+    '</ul></div>' +
+    '    <button type="button" class="btn btn-link" id="reason_clear">Clear</button>';
 
 $(date_buttons).insertAfter('#confirm-accept > div > div > form > div.modal-body > div:nth-child(5) > label:nth-child(4)');
 $('input[id="perma.false"]').prop("checked", true);
+
+$(reason_buttons).insertAfter('#confirm-accept > div > div > form > div.modal-body > div:nth-child(6) > input');
 
 // ===== Links in content =====
 $('.content').each(function(){
@@ -227,6 +250,19 @@ $('.plusdate').on("click", function() {
             break;
     }
     $('#datetimeselect').val(now.format("YYYY/MM/DD HH:mm"));
+});
+
+// ===== Reasons FTW =====
+$('.plusreason').on('click', function() {
+    var reason_val = $('input[name="reason"]').val();
+    if ($(this).data('place') == 'before') {
+        $('input[name="reason"]').val($(this).html() + ' ' + reason_val);
+    } else {
+        $('input[name="reason"]').val(reason_val + ' ' + $(this).html());
+    }
+});
+$('button#reason_clear').on('click', function() {
+    $('input[name="reason"]').val("");
 });
 
 // ===== Comments Nice Look =====
