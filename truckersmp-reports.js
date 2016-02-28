@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.3.0
+// @version      1.3.1
 // @author       CJMAXiK
 // @match        *://truckersmp.com/*/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
@@ -17,9 +17,9 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
-var $version = "1.3.0";
+var $version = "1.3.1";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
-$('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + $version + '</span> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
+$('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + $version + '</span> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a> <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
 
 // ===== Bootstrapping =====
 var now = moment();
@@ -32,7 +32,11 @@ var date_buttons = '<br>' +
     '<button type="button" class="btn btn-danger plusdate" data-plus="3month">+3</button>' +
     '<button type="button" class="btn btn-xs btn-link plusdate" data-plus="clear">Current time</button>';
 
-var reason_buttons = '<br><div class="btn-group"><a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">Reasons <span class="caret"></span></a>' +
+var reason_buttons = '<br><div class="btn-group"><a class="btn btn-warning dropdown-toggle" data-toggle="dropdown" href="#">Prefixes <span class="caret"></span></a>' +
+    '<ul class="dropdown-menu">' +
+    '    <li><a href="#" class="plusreason" data-place="before">Intentional</a></li>' +
+    '</ul></div>' +
+    '     <div class="btn-group"><a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#">Reasons <span class="caret"></span></a>' +
     '<ul class="dropdown-menu">' +
     '    <li><a href="#" class="plusreason" data-place="after">Ramming</a></li>' +
     '    <li><a href="#" class="plusreason" data-place="after">Blocking</a></li>' +
@@ -40,10 +44,7 @@ var reason_buttons = '<br><div class="btn-group"><a class="btn btn-default dropd
     '    <li><a href="#" class="plusreason" data-place="after">Insulting</a></li>' +
     '    <li><a href="#" class="plusreason" data-place="after">Trolling</a></li>' +
     '    <li><a href="#" class="plusreason" data-place="after">Reckless driving</a></li>' +
-    '</ul></div>' +
-    '     <div class="btn-group"><a class="btn btn-warning dropdown-toggle" data-toggle="dropdown" href="#">Prefixes <span class="caret"></span></a>' +
-    '<ul class="dropdown-menu">' +
-    '    <li><a href="#" class="plusreason" data-place="before">Intentional</a></li>' +
+    '    <li><a href="#" class="plusreason" data-place="after">Offensive language</a></li>' +
     '</ul></div>' +
     '     <div class="btn-group"><a class="btn btn-danger dropdown-toggle" data-toggle="dropdown" href="#">Postfixes <span class="caret"></span></a>' +
     '<ul class="dropdown-menu">' +
@@ -83,35 +84,30 @@ var settings_modal = '<div class="modal fade ets2mp-modal" id="script-settings" 
                     '<label for="steamapi_id">Steam Web API Key (<a href="http://j.mp/1Slqt8b" target="_blank">how to get it?</a>)</label> <input class="form-control" name="steamapi_id" id="steamapi_id" placeholder="Paste it here or Kappa" type="text" value="' + steamapi + '">'+
                     'If you don\'t want to use Steam integration, click on Kappa <img src="http://www.rivsoft.net/content/icons/kappa_big.png" id="Kappa">' +
                 '</div>'+
-                '<h3>Own PlusDate Buttons (not ready yet)</h3>' +
+                '<hr>'+
+                '<h4>Own PlusDate Buttons (piece of shiet, just forget about it)</h4>' +
+                '<hr>'+
+                '<h3>Own Reasons Buttons (stay tuned)</h3>' +
                 '<div class="form-group">'+
-                    '<label for="plusdate-own-buttons">Own code</label> <textarea class="form-control" rows="3" id="plusdate-own-buttons" name="plusdate-own-buttons" disabled>[{"bit": "d", "count": 1, "text": "+1 day", "style": "btn-default"},  {"bit": "d", "count": 3, "text": "+3 day"},  {"bit": "w", "count": 3, "style": "btn-default"},   {"bit": "y", "count": 9000, "style": "btn-danger"}, {"bit": "y", "count": 9000, "text": "Ramming"}]</textarea>' +
+                    '<label for="plusdate-own-buttons">Own code</label> <textarea class="form-control" rows="3" id="plusdate-own-buttons" name="plusdate-own-buttons" disabled>[{"type": "Reason", "text": "Insulting"},  {"type": "Prefix", "text": "Intensional"}, {"type": "Postfix", "text": "// FACK YOU"}]</textarea>' +
                 '</div>'+
                 '<div class="form-group clearfix">'+
                     '<div class="col-md-6 col-xs-12">' +
                     '   <h3>Syntax:</h3>' +
-                    '   <p><kbd>[{"bit": "d", "count": 1, "text": "+1 day", "style": "btn-default"},  ...]</kbd></p>' +
+                    '   <p><kbd>[{"type": "Reason", "text": "LOLOLOL"}, ...]</kbd></p>' +
                     '   <table class="table table-striped table-bordered">' +
                     '     <tbody>'+
                     '       <tr>'+
                     '         <th>Key</th>'+
-                    '         <th>Explaiation</th>'+
+                    '         <th>Explanation</th>'+
                     '       </tr>'+
                     '       <tr>'+
-                    '         <td><kbd>bit</kbd></td>'+
-                    '         <td>Choose a bit for mutate (see table ->). <b>Required</b>.</td>'+
-                    '       </tr>'+
-                    '       <tr>'+
-                    '         <td><kbd>count</kbd></td>'+
-                    '         <td>Choose a count of bit for mutate (integer value w/o quotes). <b>Required</b>.</td>'+
+                    '         <td><kbd>type</kbd></td>'+
+                    '         <td>Type of text (see table ->). <b>Required</b>.</td>'+
                     '       </tr>'+
                     '       <tr>'+
                     '         <td><kbd>text</kbd></td>'+
-                    '         <td>Your text on button. Not required, generates from bit and count instead.</td>'+
-                    '       </tr>'+
-                    '       <tr>'+
-                    '         <td><kbd>days</kbd></td>'+
-                    '         <td>Button style, based on <a href="http://getbootstrap.com/css/#buttons-options" target="_blank">Bootstrap 3 CSS classes</a>. Not required.</td>'+
+                    '         <td>Text LOL. <b>Required</b>.</td>'+
                     '       </tr>'+
                     '     </tbody>'+
                     '   </table>'+
@@ -122,27 +118,19 @@ var settings_modal = '<div class="modal fade ets2mp-modal" id="script-settings" 
                     '     <tbody>'+
                     '       <tr>'+
                     '         <th>Key</th>'+
-                    '         <th>Shorthand</th>'+
+                    '         <th>Explanation</th>'+
                     '       </tr>'+
                     '       <tr>'+
-                    '         <td>years</td>'+
-                    '         <td>y</td>'+
+                    '         <td>Reason</td>'+
+                    '         <td>Main text, placed after all the text + Space symbol</td>'+
                     '       </tr>'+
                     '       <tr>'+
-                    '         <td>months</td>'+
-                    '         <td>M</td>'+
+                    '         <td>Prefix</td>'+
+                    '         <td>Placed before all the text + Space symbol</td>'+
                     '       </tr>'+
                     '       <tr>'+
-                    '         <td>weeks</td>'+
-                    '         <td>w</td>'+
-                    '       </tr>'+
-                    '       <tr>'+
-                    '         <td>days</td>'+
-                    '         <td>d</td>'+
-                    '       </tr>'+
-                    '       <tr>'+
-                    '         <td>hours</td>'+
-                    '         <td>h</td>'+
+                    '         <td>Postfix</td>'+
+                    '         <td>Like Reasons, but it is not main.</td>'+
                     '       </tr>'+
                     '     </tbody>'+
                     '   </table>'+
