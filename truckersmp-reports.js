@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.4.1
+// @version      1.5.0
 // @author       CJMAXiK
 // @match        *://truckersmp.com/*/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
@@ -17,7 +17,7 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
-var version = "1.4.1";
+var version = "1.5.0";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 $('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + version + '</span> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected" data-toggle="popover" data-trigger="focus" title="YAY! v.' + version + ' has been deployed!" data-content="Your handy-dandy script just updated! See what you get?"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a> <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
 
@@ -63,15 +63,18 @@ if (version != last_version) {
 var default_OwnReasons = {
     prefixes: "Intentional",
     reasons: "Ramming, Blocking, Wrong Way, Insulting, Trolling, Reckless Driving, Offensive language",
-    postfixes: "// 1 m due to history, // 3 m due to history, // Perma due to history"
+    postfixes: "// 1 m due to history, // 3 m due to history, // Perma due to history, |, Next time is ",
+    declines: "Insufficient Evidence, Only a kickable offence, Wrong ID"
 };
 if (!storage.isSet('OwnReasons') || storage.isEmpty('OwnReasons')) {
     storage.set('OwnReasons', default_OwnReasons);
     OwnReasons = default_OwnReasons;
 }
 
-var reason_buttons = construct_buttons(OwnReasons);
+var reason_buttons = construct_buttons(OwnReasons, false);
+var decline_buttons = construct_buttons(OwnReasons, true);
 $(reason_buttons).insertAfter('#confirm-accept > div > div > form > div.modal-body > div:nth-child(6) > input');
+$(decline_buttons).insertAfter('#confirm-decline > div > div > form > div.modal-body > div > textarea');
 
 // ==== Settings Modal =====
 var settings_modal = '<div class="modal fade ets2mp-modal" id="script-settings" tabindex="-1">' +
@@ -86,15 +89,18 @@ var settings_modal = '<div class="modal fade ets2mp-modal" id="script-settings" 
                     'If you don\'t want to use Steam integration, click on Kappa <img src="http://www.rivsoft.net/content/icons/kappa_big.png" id="Kappa">' +
                 '</div>'+
                 '<hr>'+
-                '<h3>Own Reasons Buttons <small>(use Comma symbol to split variants)</small></h3>' +
+                '<h3>Own Reasons Buttons <small>(use Comma <kbd>,</kbd> symbol to split variants and Vertical slash <kbd>|</kbd> symbol for separator)</small></h3>' +
                 '<div class="form-group">'+
-                    '<label for="plusreason-own-Prefixes">Prefixes</label> <textarea class="form-control" rows="3" id="plusreason-own-Prefixes" name="plusreason-own-Prefixes"></textarea>' +
+                    '<label for="plusreason-own-Prefixes">Prefixes</label> <textarea class="form-control" rows="2" id="plusreason-own-Prefixes" name="plusreason-own-Prefixes"></textarea>' +
                 '</div>'+
                 '<div class="form-group">'+
-                   '<label for="plusreason-own-Reasons">Reasons</label> <textarea class="form-control" rows="3" id="plusreason-own-Reasons" name="plusreason-own-Reasons"></textarea>' +
+                   '<label for="plusreason-own-Reasons">Reasons</label> <textarea class="form-control" rows="2" id="plusreason-own-Reasons" name="plusreason-own-Reasons"></textarea>' +
                 '</div>'+
                 '<div class="form-group">'+
-                   '<label for="plusreason-own-Postfixes">Postfixes</label> <textarea class="form-control" rows="3" id="plusreason-own-Postfixes" name="plusreason-own-Postfixes"></textarea>' +
+                   '<label for="plusreason-own-Postfixes">Postfixes</label> <textarea class="form-control" rows="2" id="plusreason-own-Postfixes" name="plusreason-own-Postfixes"></textarea>' +
+                '</div>'+
+                '<div class="form-group">'+
+                   '<label for="plusreason-own-Declines">Declines</label> <textarea class="form-control" rows="2" id="plusreason-own-Declines" name="plusreason-own-Declines"></textarea>' +
                 '</div>'+
             '</div>'+
             '<div class="modal-footer">'+
@@ -109,17 +115,18 @@ $(settings_modal).insertBefore('.footer-v1');
 $('#plusreason-own-Prefixes').val(OwnReasons.prefixes);
 $('#plusreason-own-Reasons').val(OwnReasons.reasons);
 $('#plusreason-own-Postfixes').val(OwnReasons.postfixes);
+$('#plusreason-own-Declines').val(OwnReasons.declines);
 
 $('#script-settings-submit').on('click', function(event) {
     // PlusReasons settings saving
     var new_OwnReasons = {
         prefixes: $('#plusreason-own-Prefixes').val().trim(),
         reasons: $('#plusreason-own-Reasons').val().trim(),
-        postfixes: $('#plusreason-own-Postfixes').val().trim()
+        postfixes: $('#plusreason-own-Postfixes').val().trim(),
+        declines: $('#plusreason-own-Declines').val().trim()
     };
 
     if (new_OwnReasons) {
-        console.log(new_OwnReasons);
         storage.set('OwnReasons', new_OwnReasons);
     }
 
@@ -228,8 +235,22 @@ $('.plusreason').on('click', function() {
         $('input[name="reason"]').val(reason_val + ' ' + $(this).html());
     }
 });
+
+// ===== Decline FTW =====
+$('.plusdecline').on('click', function() {
+    var reason_val = $('#confirm-decline > div > div > form > div.modal-body > div > textarea').val();
+    if ($(this).data('place') == 'before') {
+        $('#confirm-decline > div > div > form > div.modal-body > div > textarea').val($(this).html() + ' ' + reason_val);
+    } else {
+        $('#confirm-decline > div > div > form > div.modal-body > div > textarea').val(reason_val + ' ' + $(this).html());
+    }
+});
+
 $('button#reason_clear').on('click', function() {
     $('input[name="reason"]').val("");
+});
+$('button#decline_clear').on('click', function() {
+    $('#confirm-decline > div > div > form > div.modal-body > div > textarea').val("");
 });
 
 // ===== Comments Nice Look =====
@@ -244,36 +265,56 @@ $(".comment > p").each(function(index, el) {
  * @param  {object} OwnReasons   OwnReasons object
  * @return {string} html         HTML snippet
  */
-function construct_buttons(OwnReasons) {
-    var prefixes = OwnReasons.prefixes.split(',');
-    var reasons = OwnReasons.reasons.split(',');
-    var postfixes = OwnReasons.postfixes.split(',');
-
+function construct_buttons(OwnReasons, if_decline) {
     var html = '<br>';
-    html += each_type('Prefixes', prefixes);
-    html += each_type('Reasons', reasons);
-    html += each_type('Postfixes', postfixes);
-    html += '<button type="button" class="btn btn-link" id="reason_clear">Clear</button>';
+
+    if (if_decline) {
+        var declines = OwnReasons.declines.split(',');
+
+        html += each_type('Declines', declines);
+        html += '<button type="button" class="btn btn-link" id="decline_clear">Clear</button>';
+    } else {
+        var prefixes = OwnReasons.prefixes.split(',');
+        var reasons = OwnReasons.reasons.split(',');
+        var postfixes = OwnReasons.postfixes.split(',');
+
+        html += each_type('Prefixes', prefixes);
+        html += each_type('Reasons', reasons);
+        html += each_type('Postfixes', postfixes);
+        html += '<button type="button" class="btn btn-link" id="reason_clear">Clear</button>';
+    }
+
 
     return html;
 
     function each_type(type, buttons) {
-        var place, color;
+        var place, color, change;
         if (type == 'Prefixes') {
             place = 'before';
             color = 'warning';
+            change = 'reason';
         } else if (type == 'Reasons'){
             place = 'after';
             color = 'default';
+            change = 'reason';
         } else if (type == 'Postfixes'){
             place = 'after';
             color = 'danger';
+            change = 'reason';
+        } else if (type == 'Declines'){
+            place = 'after';
+            color = 'info';
+            change = 'decline';
         }
         var snippet = '<div class="btn-group"><a class="btn btn-' + color + ' dropdown-toggle" data-toggle="dropdown" href="#">' +
             type + ' <span class="caret"></span></a><ul class="dropdown-menu">';
 
         buttons.forEach(function(item, i, arr) {
-            snippet += '<li><a href="#" class="plusreason" data-place="' + place + '">' + item.trim() + '</a></li>';
+            if (item.trim() == '|') {
+                snippet += '<li role="separator" class="divider"></li>';
+            } else {
+                snippet += '<li><a href="#" class="plus' + change + '" data-place="' + place + '">' + item.trim() + '</a></li>';
+            }
         });
 
         snippet += '</ul></div>     ';
