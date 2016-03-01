@@ -53,10 +53,10 @@ var OwnReasons = storage.get('OwnReasons');
 
 // ===== Versioning =====
 if (version != last_version) {
-    storage.set('last_version', version);
+    storage.set('truckersmp-reports-last_version', version);
     $('#version_detected').popover('show');
 } else {
-    storage.set('last_version', version);
+    storage.set('truckersmp-reports-last_version', version);
 }
 
 // ==== OwnReasons buttons

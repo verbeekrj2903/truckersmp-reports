@@ -32,7 +32,7 @@ $(".content").each(function(){var str=$(this).html(),regex=/((http|https):\/\/([
 // Perpetrator ID, Steam name, avatar & aliases
 var steam_id=$('input[name="steam_id"]').val(),storage=$.localStorage,steamapi=storage.get("SteamApi"),last_version=storage.get("truckersmp-reports-last_version"),OwnReasons=storage.get("OwnReasons");
 // ===== Versioning =====
-version!=last_version?(storage.set("last_version",version),$("#version_detected").popover("show")):storage.set("last_version",version);
+version!=last_version?(storage.set("truckersmp-reports-last_version",version),$("#version_detected").popover("show")):storage.set("truckersmp-reports-last_version",version);
 // ==== OwnReasons buttons
 var default_OwnReasons={prefixes:"Intentional",reasons:"Ramming, Blocking, Wrong Way, Insulting, Trolling, Reckless Driving, Offensive language",postfixes:"// 1 m due to history, // 3 m due to history, // Perma due to history"};(!storage.isSet("OwnReasons")||storage.isEmpty("OwnReasons"))&&(storage.set("OwnReasons",default_OwnReasons),OwnReasons=default_OwnReasons);var reason_buttons=construct_buttons(OwnReasons);$(reason_buttons).insertAfter("#confirm-accept > div > div > form > div.modal-body > div:nth-child(6) > input");
 // ==== Settings Modal =====
