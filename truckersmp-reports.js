@@ -2,14 +2,16 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.5.0
+// @version      1.6.0
 // @author       CJMAXiK
 // @match        *://truckersmp.com/*/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-storage-api/1.7.5/jquery.storageapi.min.js
+// @require      https://cdn.rawgit.com/ericprieto/simply-toast/master/simply-toast.min.js
 // @run-at       document-idle
 // @grant        GM_xmlhttpRequest
+// @grant        GM_setClipboard
 // @copyright    2016, CJMAXiK (http://cjmaxik.ru/)
 // ==/UserScript==
 // ==OpenUserJS==
@@ -17,10 +19,11 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
-var version = "1.5.0";
+var version = "1.6.0";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 $('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + version + '</span> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected" data-toggle="popover" data-trigger="focus" title="YAY! v.' + version + ' has been deployed!" data-content="Your handy-dandy script just updated! See what you get?"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a> <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
 
+$('head').append('<link href="https://cdn.rawgit.com/ericprieto/simply-toast/master/simply-toast.min.js" rel=stylesheet>');
 
 // ===== Bootstrapping =====
 var now = moment();
@@ -40,7 +43,7 @@ $('input[id="perma.false"]').prop("checked", true);
 $('.content').each(function(){
     var str = $(this).html();
     var regex = /((http|https):\/\/([\w\-.]+)\/([^< )\s])+)/ig;
-    var replaced_text = str.replace(regex, "<a href='$1' target='_blank'>$1</a>");
+    var replaced_text = str.replace(regex, '<a href="$1" target="_blank">$1</a> <a href="#" class="jmdev_ca" data-link="$1"><i class="fa fa-link" data-toggle="tooltip" title="Click on me to get the shorter version to your clipboard"></i></a>');
     $(this).html(replaced_text);
 });
 
@@ -152,10 +155,11 @@ $('#Kappa').on('click', function(event) {
 if (steamapi === "Kappa") {
     console.log(":O");
     $("body > div.wrapper > div.breadcrumbs > div > h1").append("<kbd>#blame" + $('body > div.wrapper > div.header > div.container > div > ul > li:nth-child(1) > a').html()+"</kbd>");
-    $("#loading-spinner").remove();
+    $("#loading-spinner").hide();
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
     });
+    $.simplyToast('Loading is complete!', 'success');
 } else if (steamapi !== null && steamapi != "http://steamcommunity.com/dev/apikey") {
     $.ajax({
         url: "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=" + steamapi + "&format=json&steamids=" + steam_id,
@@ -181,7 +185,8 @@ if (steamapi === "Kappa") {
                     $(aliases).insertAfter('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2)');
 
                     // AFTER ALL!!!!!!!
-                    $("#loading-spinner").remove();
+                    $("#loading-spinner").hide();
+                    $.simplyToast('Loading is complete!', 'success');
                     $(function () {
                         $('[data-toggle="tooltip"]').tooltip()
                     });
@@ -259,6 +264,37 @@ $(".comment > p").each(function(index, el) {
     $(this).wrap("<blockquote></blockquote>");
 });
 
+// ===== URL Shortener =====
+$('a.jmdev_ca').on('click', function(event) {
+    event.preventDefault();
+    $("#loading-spinner").show();
+
+    var link = $(this).data("link");
+    var length = link.length;
+
+    if (length < 30) {
+        result = confirm("This URL is short enough. Do you really want it?");
+        if (!result) {
+            return false;
+        }
+    };
+
+    $.ajax({
+        url: "https://www.jmdev.ca/url/generate.php",
+        xhr: function(){return new GM_XHR();},
+        type: 'POST',
+        data: {url: link},
+        success: function(val){
+            if (val) {
+                GM_setClipboard(val);
+                $("#loading-spinner").hide();
+                $.simplyToast('This is a success message! Check your clipboard!', 'success');
+            } else {
+                $.simplyToast('This is a danger message!', 'danger');
+            }
+        }
+    });
+});
 
 /**
  * construct_buttons - PlusReasons Constructor
