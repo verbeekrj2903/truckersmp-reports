@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.6.1
+// @version      1.6.2
 // @author       CJMAXiK
 // @match        *://truckersmp.com/*/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
@@ -19,7 +19,7 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
-var version = "1.6.1";
+var version = "1.6.2";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 $('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + version + '</span> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected" data-toggle="popover" data-trigger="focus" title="YAY! v.' + version + ' has been deployed!" data-content="Your handy-dandy script just updated! See what you get?"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a> <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
 
@@ -129,6 +129,7 @@ $('#plusreason-own-Postfixes').val(OwnReasons.postfixes);
 $('#plusreason-own-Declines').val(OwnReasons.declines);
 
 $('#script-settings-submit').on('click', function(event) {
+    event.preventDefault();
     // PlusReasons settings saving
     var new_OwnReasons = {
         prefixes: $('#plusreason-own-Prefixes').val().trim(),
@@ -216,6 +217,7 @@ if (perpetrator <= 2300) {
 
 // ===== Timing FTW! =====
 $('.plusdate').on("click", function() {
+    event.preventDefault();
     switch ($(this).data("plus")) {
         case '1day':
             now.add(1, 'd');
@@ -241,6 +243,7 @@ $('.plusdate').on("click", function() {
 
 // ===== Reasons FTW =====
 $('.plusreason').on('click', function() {
+    event.preventDefault();
     var reason_val = $('input[name="reason"]').val();
     if ($(this).data('place') == 'before') {
         $('input[name="reason"]').val($(this).html() + ' ' + reason_val);
@@ -251,6 +254,7 @@ $('.plusreason').on('click', function() {
 
 // ===== Decline FTW =====
 $('.plusdecline').on('click', function() {
+    event.preventDefault();
     var reason_val = $('#confirm-decline > div > div > form > div.modal-body > div > textarea').val();
     if ($(this).data('place') == 'before') {
         $('#confirm-decline > div > div > form > div.modal-body > div > textarea').val($(this).html() + ' ' + reason_val);
@@ -260,9 +264,11 @@ $('.plusdecline').on('click', function() {
 });
 
 $('button#reason_clear').on('click', function() {
+    event.preventDefault();
     $('input[name="reason"]').val("");
 });
 $('button#decline_clear').on('click', function() {
+    event.preventDefault();
     $('#confirm-decline > div > div > form > div.modal-body > div > textarea').val("");
 });
 
