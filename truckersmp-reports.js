@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.6.2
+// @version      1.6.3
 // @author       CJMAXiK
 // @match        *://truckersmp.com/*/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
@@ -19,7 +19,7 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
-var version = "1.6.2";
+var version = "1.6.3";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 $('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + version + '</span> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected" data-toggle="popover" data-trigger="focus" title="YAY! v.' + version + ' has been deployed!" data-content="Your handy-dandy script just updated! See what you get?"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a> <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
 
@@ -242,7 +242,7 @@ $('.plusdate').on("click", function() {
 });
 
 // ===== Reasons FTW =====
-$('.plusreason').on('click', function() {
+$('.plusreason').on('click', function(event) {
     event.preventDefault();
     var reason_val = $('input[name="reason"]').val();
     if ($(this).data('place') == 'before') {
@@ -253,7 +253,7 @@ $('.plusreason').on('click', function() {
 });
 
 // ===== Decline FTW =====
-$('.plusdecline').on('click', function() {
+$('.plusdecline').on('click', function(event) {
     event.preventDefault();
     var reason_val = $('#confirm-decline > div > div > form > div.modal-body > div > textarea').val();
     if ($(this).data('place') == 'before') {
@@ -263,11 +263,11 @@ $('.plusdecline').on('click', function() {
     }
 });
 
-$('button#reason_clear').on('click', function() {
+$('button#reason_clear').on('click', function(event) {
     event.preventDefault();
     $('input[name="reason"]').val("");
 });
-$('button#decline_clear').on('click', function() {
+$('button#decline_clear').on('click', function(event) {
     event.preventDefault();
     $('#confirm-decline > div > div > form > div.modal-body > div > textarea').val("");
 });
