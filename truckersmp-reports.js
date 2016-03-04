@@ -216,7 +216,7 @@ if (perpetrator <= 2300) {
 }
 
 // ===== Timing FTW! =====
-$('.plusdate').on("click", function() {
+$('.plusdate').on("click", function(event) {
     event.preventDefault();
     switch ($(this).data("plus")) {
         case '1day':
