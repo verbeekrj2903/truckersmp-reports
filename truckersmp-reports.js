@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.6.6
+// @version      1.6.7
 // @author       CJMAXiK
 // @icon         http://truckersmp.com/assets/images/favicon.png
 // @match        *://truckersmp.com/*/reports/view/*
@@ -26,7 +26,7 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
-var version = "1.6.6";
+var version = "1.6.7";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 $('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + version + '</span> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected" data-toggle="popover" data-trigger="focus" title="YAY! v.' + version + ' has been deployed!" data-content="Your handy-dandy script just updated! See what you get?"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a> <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
 
@@ -101,7 +101,7 @@ var settings_modal = '<div class="modal fade ets2mp-modal" id="script-settings" 
             '</div>' +
             '<div class="modal-body">'+
                 '<div class="form-group">'+
-                    '<label for="steamapi_id">Steam Web API Key (<a href="http://j.mp/1Slqt8b" target="_blank">how to get it?</a>)</label> <input class="form-control" name="steamapi_id" id="steamapi_id" placeholder="Paste it here or Kappa" type="text" value="' + steamapi + '">'+
+                    '<label for="steamapi_id">Steam Web API Key (<a href="http://jmdev.ca/url?l=12a81" target="_blank">how to get it?</a>)</label> <input class="form-control" name="steamapi_id" id="steamapi_id" placeholder="Paste it here or Kappa" type="text" value="' + steamapi + '">'+
                     'If you don\'t want to use Steam integration, click on Kappa <img src="http://s019.radikal.ru/i600/1603/56/506aefc956d7.png" id="Kappa">' +
                 '</div>'+
                 '<hr>'+
