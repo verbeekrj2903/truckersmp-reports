@@ -2,16 +2,23 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.6.5
+// @version      1.6.6
 // @author       CJMAXiK
+// @icon         http://truckersmp.com/assets/images/favicon.png
 // @match        *://truckersmp.com/*/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
+// @updateURL    https://openuserjs.org/install/cjmaxik/TruckersMP_Reports_Improved.user.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-storage-api/1.7.5/jquery.storageapi.min.js
-// @require      https://cdn.rawgit.com/ericprieto/simply-toast/master/simply-toast.min.js
 // @run-at       document-idle
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setClipboard
+// @grant        GM_notification
+// @connect      https://api.steampowered.com/*
+// @connect      http://steamcommunity.com/*
+// @connect      http://www.jmdev.ca/url/*
+// @noframes
+// @nocompat Chrome
 // @copyright    2016, CJMAXiK (http://cjmaxik.ru/)
 // ==/UserScript==
 // ==OpenUserJS==
@@ -19,11 +26,9 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
-var version = "1.6.5";
+var version = "1.6.6";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 $('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + version + '</span> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected" data-toggle="popover" data-trigger="focus" title="YAY! v.' + version + ' has been deployed!" data-content="Your handy-dandy script just updated! See what you get?"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a> <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
-
-$('head').append('<link href="https://cdn.rawgit.com/ericprieto/simply-toast/master/simply-toast.min.js" rel=stylesheet>');
 
 // ===== Bootstrapping =====
 var now = moment();
@@ -97,21 +102,21 @@ var settings_modal = '<div class="modal fade ets2mp-modal" id="script-settings" 
             '<div class="modal-body">'+
                 '<div class="form-group">'+
                     '<label for="steamapi_id">Steam Web API Key (<a href="http://j.mp/1Slqt8b" target="_blank">how to get it?</a>)</label> <input class="form-control" name="steamapi_id" id="steamapi_id" placeholder="Paste it here or Kappa" type="text" value="' + steamapi + '">'+
-                    'If you don\'t want to use Steam integration, click on Kappa <img src="http://www.rivsoft.net/content/icons/kappa_big.png" id="Kappa">' +
+                    'If you don\'t want to use Steam integration, click on Kappa <img src="http://s019.radikal.ru/i600/1603/56/506aefc956d7.png" id="Kappa">' +
                 '</div>'+
                 '<hr>'+
-                '<h3>Own Reasons Buttons <small>(use Comma <kbd>,</kbd> symbol to split variants and Vertical slash <kbd>|</kbd> symbol for separator)</small></h3>' +
+                '<h3>Own Reasons Buttons <small>(use Comma <kbd>,</kbd> to split variants and Vertical slash <kbd>|</kbd> for separator)</small></h3>' +
                 '<div class="form-group">'+
                     '<label for="plusreason-own-Prefixes">Prefixes</label> <textarea class="form-control" rows="2" id="plusreason-own-Prefixes" name="plusreason-own-Prefixes"></textarea>' +
                 '</div>'+
                 '<div class="form-group">'+
-                   '<label for="plusreason-own-Reasons">Reasons</label> <textarea class="form-control" rows="2" id="plusreason-own-Reasons" name="plusreason-own-Reasons"></textarea>' +
+                   '<label for="plusreason-own-Reasons">Reasons</label> <textarea class="form-control" rows="3" id="plusreason-own-Reasons" name="plusreason-own-Reasons"></textarea>' +
                 '</div>'+
                 '<div class="form-group">'+
-                   '<label for="plusreason-own-Postfixes">Postfixes</label> <textarea class="form-control" rows="2" id="plusreason-own-Postfixes" name="plusreason-own-Postfixes"></textarea>' +
+                   '<label for="plusreason-own-Postfixes">Postfixes</label> <textarea class="form-control" rows="3" id="plusreason-own-Postfixes" name="plusreason-own-Postfixes"></textarea>' +
                 '</div>'+
                 '<div class="form-group">'+
-                   '<label for="plusreason-own-Declines">Declines</label> <textarea class="form-control" rows="2" id="plusreason-own-Declines" name="plusreason-own-Declines"></textarea>' +
+                   '<label for="plusreason-own-Declines">Declines</label> <textarea class="form-control" rows="3" id="plusreason-own-Declines" name="plusreason-own-Declines"></textarea>' +
                 '</div>'+
             '</div>'+
             '<div class="modal-footer">'+
@@ -168,7 +173,6 @@ if (steamapi === "Kappa") {
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
     });
-    $.simplyToast('Loading is complete!', 'success');
 } else if (steamapi !== null && steamapi != "http://steamcommunity.com/dev/apikey") {
     $.ajax({
         url: "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=" + steamapi + "&format=json&steamids=" + steam_id,
@@ -195,7 +199,6 @@ if (steamapi === "Kappa") {
 
                     // AFTER ALL!!!!!!!
                     $("#loading-spinner").hide();
-                    $.simplyToast('Loading is complete!', 'success');
                     $(function () {
                         $('[data-toggle="tooltip"]').tooltip()
                     });
@@ -283,7 +286,7 @@ $('a.jmdev_ca').on('click', function(event) {
     event.preventDefault();
     $("#loading-spinner").show();
 
-    var link = $(this).data("link");
+    var link = encodeURIComponent($(this).data("link") + '&utm_source=reports');
     var length = link.length;
 
     if (length < 30) {
@@ -301,9 +304,9 @@ $('a.jmdev_ca').on('click', function(event) {
             if (val.error == "false") {
                 GM_setClipboard('http://www.jmdev.ca/url/?l=' + val.result.url_short);
                 $("#loading-spinner").hide();
-                $.simplyToast('This is a success message! Check your clipboard!', 'success');
+                GM_notification('This is a success message! Check your clipboard!');
             } else {
-                $.simplyToast('This is a danger message!', 'danger');
+                GM_notification('Looks like we have a problem with URL shortener...');
             }
         }
     });
