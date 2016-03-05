@@ -2,12 +2,11 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.6.7
+// @version      1.6.8
 // @author       CJMAXiK
 // @icon         http://truckersmp.com/assets/images/favicon.png
 // @match        *://truckersmp.com/*/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
-// @updateURL    https://openuserjs.org/install/cjmaxik/TruckersMP_Reports_Improved.user.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-storage-api/1.7.5/jquery.storageapi.min.js
 // @run-at       document-idle
@@ -18,7 +17,7 @@
 // @connect      http://steamcommunity.com/*
 // @connect      http://www.jmdev.ca/url/*
 // @noframes
-// @nocompat Chrome
+// @nocompat     Chrome
 // @copyright    2016, CJMAXiK (http://cjmaxik.ru/)
 // ==/UserScript==
 // ==OpenUserJS==
@@ -26,7 +25,7 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 'use strict';
-var version = "1.6.7";
+var version = "1.6.8";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 $('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + version + '</span> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected" data-toggle="popover" data-trigger="focus" title="YAY! v.' + version + ' has been deployed!" data-content="Your handy-dandy script just updated! See what you get?"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a> <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
 
