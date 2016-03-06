@@ -276,7 +276,7 @@ $('button#decline_clear').on('click', function(event) {
 
 // ===== Comments Nice Look =====
 $(".comment > p").each(function(index, el) {
-    $("<hr>").insertAfter(this);
+    $('<hr style="margin: 10px 0 !important;">').insertAfter(this);
     $(this).wrap("<blockquote></blockquote>");
 });
 
@@ -285,7 +285,7 @@ $('a.jmdev_ca').on('click', function(event) {
     event.preventDefault();
     $("#loading-spinner").show();
 
-    var link = encodeURIComponent($(this).data("link") + '&utm_source=reports');
+    var link = encodeURIComponent($(this).data("link"));
     var length = link.length;
 
     if (length < 30) {
@@ -296,12 +296,12 @@ $('a.jmdev_ca').on('click', function(event) {
     };
 
     $.ajax({
-        url: "http://www.jmdev.ca/url/algo.php?method=insert&url=" + link,
+        url: "http://jmdev.ca/url/algo.php?method=insert&url=" + link,
         xhr: function(){return new GM_XHR();},
         type: 'GET',
         success: function(val){
             if (val.error == "false") {
-                GM_setClipboard('http://www.jmdev.ca/url/?l=' + val.result.url_short);
+                GM_setClipboard('http://jmdev.ca/url/?l=' + val.result.url_short);
                 $("#loading-spinner").hide();
                 GM_notification('This is a success message! Check your clipboard!');
             } else {
