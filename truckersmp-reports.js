@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.6.12
+// @version      1.7.0
 // @author       CJMAXiK
 // @icon         http://truckersmp.com/assets/images/favicon.png
 // @match        *://truckersmp.com/*/reports/view/*
@@ -24,8 +24,8 @@
 // @author       CJMAXiK
 // ==/OpenUserJS==
 /* jshint -W097 */
-'use strict';
-var version = "1.6.12";
+
+var version = "1.7.0";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 $('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + version + '</span> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected" data-toggle="popover" data-trigger="focus" title="YAY! v.' + version + ' has been deployed!" data-content="Your handy-dandy script just updated! See what you get?"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a> <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
 
@@ -45,6 +45,7 @@ $('input[id="perma.false"]').prop("checked", true);
 
 // ===== Links in content =====
 $('.content').each(function(){
+    'use strict';
     var str = $(this).html();
     var regex = /((http|https):\/\/([\w\-.]+)\/([^< )\s,])+)/ig;
     var replaced_text = str.replace(regex, '<a href="$1" target="_blank" class="replaced">$1</a> <a href="#" class="jmdev_ca" data-link="$1"><i class="fa fa-link" data-toggle="tooltip" title="Click on me to get the shorter version to your clipboard"></i></a>');
@@ -52,6 +53,7 @@ $('.content').each(function(){
 });
 
 $('a.replaced').each(function(index, el) {
+    'use strict';
     var sub = $(this).text();
     if (sub.length > 60) {
         $(this).text(sub.substring(0, 40) + '...');
@@ -133,6 +135,7 @@ $('#plusreason-own-Postfixes').val(OwnReasons.postfixes);
 $('#plusreason-own-Declines').val(OwnReasons.declines);
 
 $('#script-settings-submit').on('click', function(event) {
+    'use strict';
     event.preventDefault();
     // PlusReasons settings saving
     var new_OwnReasons = {
@@ -156,6 +159,7 @@ $('#script-settings-submit').on('click', function(event) {
     }
 });
 $('#Kappa').on('click', function(event) {
+    'use strict';
     event.preventDefault();
     result = confirm("Are you sure? This is not funny!!!!! #blame" + $('body > div.wrapper > div.header > div.container > div > ul > li:nth-child(1) > a').html());
     if (result) {
@@ -170,14 +174,19 @@ if (steamapi === "Kappa") {
     $("body > div.wrapper > div.breadcrumbs > div > h1").append("<kbd>#blame" + $('body > div.wrapper > div.header > div.container > div > ul > li:nth-child(1) > a').html()+"</kbd>");
     $("#loading-spinner").hide();
     $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
+        'use strict';
+        $('[data-toggle="tooltip"]').tooltip();
     });
 } else if (steamapi !== null && steamapi != "http://steamcommunity.com/dev/apikey") {
     $.ajax({
         url: "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=" + steamapi + "&format=json&steamids=" + steam_id,
-        xhr: function(){return new GM_XHR();},
+        xhr: function(){
+            'use strict';
+            return new GM_XHR();
+        },
         type: 'GET',
         success: function(val){
+            'use strict';
             var player_data = val;
             var steam_name = player_data.response.players[0].personaname;
             var steam_link = '<span id="steam_LOL"> aka <a href="http://steamcommunity.com/profiles/' + steam_id + '" target="_blank"><kbd>' + steam_name + '</kbd> <img src="'+ player_data.response.players[0].avatar + '" class="img-rounded"></a></span>';
@@ -191,7 +200,7 @@ if (steamapi === "Kappa") {
                     var steam_aliases = val;
                     var aliases = "";
                     if (!$.isEmptyObject(steam_aliases)) {
-                        for(var key in steam_aliases) {
+                        for (var key in steam_aliases) {
                             aliases += '<kbd  data-toggle="tooltip" title="' + steam_aliases[key].timechanged + '">' + steam_aliases[key].newname + '</kbd>   ';
                         }
                         aliases = '<tr><td>Aliases</td><td>'+ aliases +'</td></tr>';
@@ -254,7 +263,6 @@ $('.plusreason').on('click', function(event) {
         $('input[name="reason"]').val(reason_val + ' ' + $(this).html() + ' ');
     }
     $('input[name="reason"]').focus();
-
 });
 
 // ===== Decline FTW =====
@@ -313,6 +321,57 @@ $('a.jmdev_ca').on('click', function(event) {
             }
         }
     });
+});
+
+// ===== DateTime and Reason inputs checking =====
+$('#confirm-accept > div > div > form').on('submit', function(event) {
+    var time_check = $('#datetimeselect').val();
+    var reason_check = $('#confirm-accept > div > div > form > div.modal-body > div:nth-child(6) > input').val();
+    var error_style = {
+        'border-color': '#a94442',
+        '-webkit-box-shadow': 'inset 0 1px 1px rgba(0,0,0,.075)',
+        'box-shadow': 'inset 0 1px 1px rgba(0,0,0,.075)'
+    }
+    var normal_style = {
+        'border-color': '',
+        '-webkit-box-shadow': '',
+        'box-shadow': ''
+    }
+
+    if (!time_check) {
+        $('#datetimeselect').css(error_style);
+        event.preventDefault();
+    } else {
+        $('#datetimeselect').css(normal_style);
+    };
+
+    if (!reason_check) {
+        $('#confirm-accept > div > div > form > div.modal-body > div:nth-child(6) > input').css(error_style);
+        event.preventDefault();
+    } else {
+        $('#confirm-accept > div > div > form > div.modal-body > div:nth-child(6) > input').css(normal_style);
+    }
+});
+
+$('#confirm-decline > div > div > form').on('submit', function(event) {
+    event.preventDefault();
+    var comment_check = $('#confirm-decline > div > div > form > div.modal-body > div > textarea').val();
+    var error_style = {
+        'border-color': '#a94442',
+        '-webkit-box-shadow': 'inset 0 1px 1px rgba(0,0,0,.075)',
+        'box-shadow': 'inset 0 1px 1px rgba(0,0,0,.075)'
+    }
+    var normal_style = {
+        'border-color': '',
+        '-webkit-box-shadow': '',
+        'box-shadow': ''
+    }
+
+    if (!comment_check) {
+        $('#confirm-decline > div > div > form > div.modal-body > div > textarea').css(error_style);
+    } else {
+        $('#confirm-decline > div > div > form > div.modal-body > div > textarea').css(normal_style);
+    }
 });
 
 /**
@@ -380,6 +439,7 @@ function construct_buttons(OwnReasons, if_decline) {
 /**
  * Queries Helper
  */
+
 function GM_XHR() {
     this.type = null;
     this.url = null;
