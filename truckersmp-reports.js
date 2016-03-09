@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.7.2
+// @version      1.7.3
 // @author       CJMAXiK
 // @icon         http://truckersmp.com/assets/images/favicon.png
 // @match        *://truckersmp.com/*/reports/view/*
@@ -25,7 +25,7 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 
-var version = "1.7.2";
+var version = "1.7.3";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 $('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + version + '</span> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected" data-toggle="popover" data-trigger="focus" title="YAY! v.' + version + ' has been deployed!" data-content="Your handy-dandy script just updated! See what you get?"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a> <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
 
@@ -327,6 +327,8 @@ $('a.jmdev_ca').on('click', function(event) {
 // ===== DateTime and Reason inputs checking =====
 $('#confirm-accept > div > div > form').on('submit', function(event) {
     var time_check = $('#datetimeselect').val();
+    var perm_check = $('input[id="perma.true"]').prop("checked");
+    console.log(perm_check);
     var reason_check = $('#confirm-accept > div > div > form > div.modal-body > div:nth-child(6) > input').val();
     var error_style = {
         'border-color': '#a94442',
@@ -339,7 +341,7 @@ $('#confirm-accept > div > div > form').on('submit', function(event) {
         'box-shadow': ''
     }
 
-    if (!time_check) {
+    if (!time_check && !perm_check) {
         $('#datetimeselect').css(error_style);
         event.preventDefault();
     } else {
