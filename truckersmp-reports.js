@@ -73,7 +73,8 @@ if (version != last_version) {
     $('#version_detected').popover('show');
     $('#version_detected').popover('show');
     setTimeout(function() {
-          $('#version_detected').popover('hide');
+        'use strict';
+        $('#version_detected').popover('hide');
     }, 3000);
     $('h3.popover-title').css('background-color', '#555').css('font-weight', 'bold');
 } else {
@@ -228,7 +229,6 @@ if (steamapi === "Kappa") {
 var perpetrator_id = $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2) > td:nth-child(2) > a').attr('href').replace('/user/', '');
 if (perpetrator_id <= 2300) {
     var low_id = ' <span class="badge badge-red" data-toggle="tooltip" title="Be careful! Perpetrator ID seems to be an In-Game ID. Double-check Steam aliases!">Low ID - '+ perpetrator_id +'</span>';
-    $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2) > td:nth-child(2)').append(low_id);
 } else {
     var low_id = ' <span class="badge badge-blue" data-toggle="tooltip" title="ID is legit">'+ perpetrator_id +'</span>';
 }
