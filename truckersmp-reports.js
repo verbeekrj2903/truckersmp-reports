@@ -230,7 +230,7 @@ if (perpetrator_id <= 2300) {
     var low_id = ' <span class="badge badge-red" data-toggle="tooltip" title="Be careful! Perpetrator ID seems to be an In-Game ID. Double-check Steam aliases!">Low ID - '+ perpetrator_id +'</span>';
     $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2) > td:nth-child(2)').append(low_id);
 } else {
-    var low_id = ' <span class="badge badge-blue" data-toggle="tooltip" title="In-Game ID is legit">'+ perpetrator_id +'</span>';
+    var low_id = ' <span class="badge badge-blue" data-toggle="tooltip" title="ID is legit">'+ perpetrator_id +'</span>';
 }
 $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2) > td:nth-child(2)').append(low_id);
 
