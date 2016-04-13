@@ -211,7 +211,6 @@ if (steamapi === "Kappa") {
                         aliases = '<tr><td>Aliases</td><td>'+ aliases +'</td></tr>';
                         $(aliases).insertAfter('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2)');
                     };
-                    // AFTER ALL!!!!!!!
                     $("#loading-spinner").hide();
                     $(function () {
                         $('[data-toggle="tooltip"]').tooltip()
