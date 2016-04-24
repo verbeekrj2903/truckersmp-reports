@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.7.7
+// @version      1.7.8
 // @author       CJMAXiK
 // @icon         http://truckersmp.com/assets/images/favicon.png
 // @match        *://truckersmp.com/*/reports/view/*
@@ -25,12 +25,12 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 
-var version = "1.7.7";
+var version = "1.7.8";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 $('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + version + '</span> <a href="https://www.jmdev.ca/url/" target="_blank"><i class="fa fa-link" data-toggle="tooltip" title="URL Shortener"></i></a> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected" data-toggle="popover" data-trigger="focus" title="YAY! v.' + version + ' has been deployed!" data-content="Your handy-dandy script just updated! See what you get?"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a>  <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
 
 // ===== Bootstrapping =====
-var now = moment();
+var now = moment.utc();
 
 var date_buttons = '<br>' +
     '<button type="button" class="btn btn-default plusdate" data-plus="1day">+1 day</button>' +
@@ -38,7 +38,7 @@ var date_buttons = '<br>' +
     '<button type="button" class="btn btn-warning plusdate" data-plus="1week">+1 week</button>     ' +
     '<button type="button" class="btn btn-danger plusdate" data-plus="1month">+1 month</button>' +
     '<button type="button" class="btn btn-danger plusdate" data-plus="3month">+3</button>' +
-    '<button type="button" class="btn btn-xs btn-link plusdate" data-plus="clear">Current time</button>';
+    '<button type="button" class="btn btn-xs btn-link plusdate" data-plus="clear">Current UTC time</button>';
 
 $(date_buttons).insertAfter('#confirm-accept > div > div > form > div.modal-body > div:nth-child(5) > label:nth-child(4)');
 $('input[id="perma.false"]').prop("checked", true);
@@ -253,7 +253,7 @@ $('.plusdate').on("click", function(event) {
             now.add(3, 'M');
             break;
         case 'clear':
-            now = moment();
+            now = moment.utc();
             break;
     }
     $('#datetimeselect').val(now.format("YYYY/MM/DD HH:mm"));
