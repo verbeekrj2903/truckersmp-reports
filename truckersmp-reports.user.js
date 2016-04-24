@@ -16,6 +16,7 @@
 // @connect      https://api.steampowered.com/*
 // @connect      http://steamcommunity.com/*
 // @connect      http://jmdev.ca/url/*
+// @updateURL https://openuserjs.org/meta/cjmaxik/TruckersMP_Reports_Improved.meta.js
 // @noframes
 // @nocompat     Chrome
 // @copyright    2016, CJMAXiK (http://cjmaxik.ru/)
