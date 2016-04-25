@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.8.0
+// @version      1.8.1
 // @author       CJMAXiK
 // @icon         http://truckersmp.com/assets/images/favicon.png
 // @match        *://truckersmp.com/*/reports/view/*
@@ -13,9 +13,9 @@
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setClipboard
 // @grant        GM_notification
-// @connect      https://api.steampowered.com/*
-// @connect      http://steamcommunity.com/*
-// @connect      http://jmdev.ca/url/*
+// @connect      steampowered.com
+// @connect      steamcommunity.com
+// @connect      jmdev.ca
 // @updateURL    https://openuserjs.org/meta/cjmaxik/TruckersMP_Reports_Improved.meta.js
 // @noframes
 // @nocompat     Chrome
@@ -34,7 +34,7 @@ function construct_buttons(OwnReasons,if_decline){function each_type(type,button
  *
  * Queries Helper
  */
-function GM_XHR(){this.type=null,this.url=null,this.async=null,this.username=null,this.password=null,this.status=null,this.headers={},this.readyState=null,this.abort=function(){this.readyState=0},this.getAllResponseHeaders=function(){return 4!=this.readyState?"":this.responseHeaders},this.getResponseHeader=function(name){var regexp=new RegExp("^"+name+": (.*)$","im"),match=regexp.exec(this.responseHeaders);return match?match[1]:""},this.open=function(type,url,async,username,password){this.type=type?type:null,this.url=url?url:null,this.async=async?async:null,this.username=username?username:null,this.password=password?password:null,this.readyState=1},this.setRequestHeader=function(name,value){this.headers[name]=value},this.send=function(data){this.data=data;var that=this;GM_xmlhttpRequest({method:this.type,url:this.url,headers:this.headers,data:this.data,onload:function(rsp){for(var k in rsp){that[k]=rsp[k]}that.onreadystatechange()},onerror:function(rsp){for(var k in rsp){that[k]=rsp[k]}}})}}var version="1.8.0";$("body > div.wrapper > div.breadcrumbs > div > h1").append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">'+version+'</span> <a href="https://www.jmdev.ca/url/" target="_blank"><i class="fa fa-link" data-toggle="tooltip" title="URL Shortener"></i></a> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected" data-toggle="popover" data-trigger="focus" title="YAY! v.'+version+' has been deployed!" data-content="Your handy-dandy script just updated! See what you get?"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a>  <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
+function GM_XHR(){this.type=null,this.url=null,this.async=null,this.username=null,this.password=null,this.status=null,this.headers={},this.readyState=null,this.abort=function(){this.readyState=0},this.getAllResponseHeaders=function(){return 4!=this.readyState?"":this.responseHeaders},this.getResponseHeader=function(name){var regexp=new RegExp("^"+name+": (.*)$","im"),match=regexp.exec(this.responseHeaders);return match?match[1]:""},this.open=function(type,url,async,username,password){this.type=type?type:null,this.url=url?url:null,this.async=async?async:null,this.username=username?username:null,this.password=password?password:null,this.readyState=1},this.setRequestHeader=function(name,value){this.headers[name]=value},this.send=function(data){this.data=data;var that=this;GM_xmlhttpRequest({method:this.type,url:this.url,headers:this.headers,data:this.data,onload:function(rsp){for(var k in rsp){that[k]=rsp[k]}that.onreadystatechange()},onerror:function(rsp){for(var k in rsp){that[k]=rsp[k]}}})}}var version="1.8.1";$("body > div.wrapper > div.breadcrumbs > div > h1").append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">'+version+'</span> <a href="https://www.jmdev.ca/url/" target="_blank"><i class="fa fa-link" data-toggle="tooltip" title="URL Shortener"></i></a> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected" data-toggle="popover" data-trigger="focus" title="YAY! v.'+version+' has been deployed!" data-content="Your handy-dandy script just updated! See what you get?"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a>  <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
 // ===== Bootstrapping =====
 var now=moment.utc(),date_buttons='<br><button type="button" class="btn btn-default plusdate" data-plus="1day">+1 day</button><button type="button" class="btn btn-default plusdate" data-plus="3day">+3</button>     <button type="button" class="btn btn-warning plusdate" data-plus="1week">+1 week</button>     <button type="button" class="btn btn-danger plusdate" data-plus="1month">+1 month</button><button type="button" class="btn btn-danger plusdate" data-plus="3month">+3</button><button type="button" class="btn btn-xs btn-link plusdate" data-plus="clear">Current UTC time</button>';$(date_buttons).insertAfter("#confirm-accept > div > div > form > div.modal-body > div:nth-child(5) > label:nth-child(4)"),$('input[id="perma.false"]').prop("checked",!0),
 // ===== Links in content =====
