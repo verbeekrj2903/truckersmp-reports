@@ -2,20 +2,21 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.8.1
+// @version      1.9.0
 // @author       CJMAXiK
 // @icon         http://truckersmp.com/assets/images/favicon.png
 // @match        *://truckersmp.com/*/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
-// @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-storage-api/1.7.5/jquery.storageapi.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js
 // @run-at       document-idle
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setClipboard
 // @grant        GM_notification
+// @connect      self
 // @connect      steampowered.com
 // @connect      steamcommunity.com
 // @connect      jmdev.ca
+// @connect      *
 // @updateURL    https://openuserjs.org/meta/cjmaxik/TruckersMP_Reports_Improved.meta.js
 // @noframes
 // @nocompat     Chrome
@@ -26,7 +27,7 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 
-var version = "1.8.1";
+var version = "1.9.0";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 $('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + version + '</span> <a href="https://www.jmdev.ca/url/" target="_blank"><i class="fa fa-link" data-toggle="tooltip" title="URL Shortener"></i></a> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected" data-toggle="popover" data-trigger="focus" title="YAY! v.' + version + ' has been deployed!" data-content="Your handy-dandy script just updated! See what you get?"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a>  <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
 
@@ -34,6 +35,7 @@ $('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span cla
 var now = moment.utc();
 
 var date_buttons = '<br>' +
+    '<button type="button" class="btn btn-default plusdate" data-plus="3hrs">+3 hrs</button>     ' +
     '<button type="button" class="btn btn-default plusdate" data-plus="1day">+1 day</button>' +
     '<button type="button" class="btn btn-default plusdate" data-plus="3day">+3</button>     ' +
     '<button type="button" class="btn btn-warning plusdate" data-plus="1week">+1 week</button>     ' +
@@ -63,14 +65,14 @@ $('a.replaced').each(function(index, el) {
 
 // Perpetrator ID, Steam name, avatar & aliases
 var steam_id = $('input[name="steam_id"]').val();
-var storage = $.localStorage;
-var steamapi = storage.get('SteamApi');
-var last_version = storage.get('truckersmp-reports-last_version');
-var OwnReasons = storage.get('OwnReasons');
+var storage = localStorage;
+var steamapi = storage.getItem('SteamApi');
+var last_version = storage.getItem('truckersmp-reports-last_version');
+var OwnReasons = JSON.parse(storage.getItem('OwnReasons'));
 
 // ===== Versioning =====
 if (version != last_version) {
-    storage.set('truckersmp-reports-last_version', version);
+    storage.setItem('truckersmp-reports-last_version', version);
     $('#version_detected').popover('show');
     $('#version_detected').popover('show');
     setTimeout(function() {
@@ -79,18 +81,18 @@ if (version != last_version) {
     }, 3000);
     $('h3.popover-title').css('background-color', '#555').css('font-weight', 'bold');
 } else {
-    storage.set('truckersmp-reports-last_version', version);
+    storage.setItem('truckersmp-reports-last_version', version);
 }
 
 // ==== OwnReasons buttons
-var default_OwnReasons = {
+var default_OwnReasons = JSON.stringify({
     prefixes: "Intentional",
     reasons: "Ramming, Blocking, Wrong Way, Insulting, Trolling, Reckless Driving, Offensive language, Griefing, Driving without lights, Overtaking at EP, |, Change your Steam name and make a ban appeal",
     postfixes: "// 1 m due to history, // 3 m due to history, |, // Perma due to history",
     declines: "Insufficient Evidence, No evidence, Only a kickable offence, Wrong ID, No offence, Already banned for this evidence"
-};
-if (!storage.isSet('OwnReasons') || storage.isEmpty('OwnReasons')) {
-    storage.set('OwnReasons', default_OwnReasons);
+});
+if (!storage.OwnReasons) {
+    storage.setItem('OwnReasons', default_OwnReasons);
     OwnReasons = default_OwnReasons;
 }
 
@@ -144,21 +146,21 @@ $('#script-settings-submit').on('click', function(event) {
     'use strict';
     event.preventDefault();
     // PlusReasons settings saving
-    var new_OwnReasons = {
+    var new_OwnReasons = JSON.stringify({
         prefixes: $('#plusreason-own-Prefixes').val().trim(),
         reasons: $('#plusreason-own-Reasons').val().trim(),
         postfixes: $('#plusreason-own-Postfixes').val().trim(),
         declines: $('#plusreason-own-Declines').val().trim()
-    };
+    });
 
     if (new_OwnReasons) {
-        storage.set('OwnReasons', new_OwnReasons);
+        storage.setItem('OwnReasons', new_OwnReasons);
     }
 
     // Key checking & saving
     if (($('#steamapi_id').val().length == 32) || ($('#steamapi_id').val() == "Kappa")) {
         alert("Settings are saved!");
-        storage.set('SteamApi', $('#steamapi_id').val());
+        storage.setItem('SteamApi', $('#steamapi_id').val());
         location.reload();
     } else {
         alert("Wrong API Key! Please change it or Kappa.");
@@ -170,7 +172,7 @@ $('#Kappa').on('click', function(event) {
     result = confirm("Are you sure? This is not funny!!!!! #blame" + $('body > div.wrapper > div.header > div.container > div > ul > li:nth-child(1) > a').html());
     if (result) {
         $('#steamapi_id').val("Kappa");
-        storage.set('SteamApi', "Kappa");
+        storage.setItem('SteamApi', "Kappa");
         location.reload();
     }
 });
@@ -238,6 +240,9 @@ $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-chi
 $('.plusdate').on("click", function(event) {
     event.preventDefault();
     switch ($(this).data("plus")) {
+        case '3hrs':
+            now.add(3, 'h');
+            break;
         case '1day':
             now.add(1, 'd');
             break;
@@ -408,11 +413,13 @@ function construct_buttons(OwnReasons, if_decline) {
     var html = '<br>';
 
     if (if_decline) {
+        console.log(typeof OwnReasons);
         var declines = OwnReasons.declines.split(',');
 
         html += each_type('Declines', declines);
         html += '<button type="button" class="btn btn-link" id="decline_clear">Clear</button>';
     } else {
+        console.log(typeof OwnReasons);
         var prefixes = OwnReasons.prefixes.split(',');
         var reasons = OwnReasons.reasons.split(',');
         var postfixes = OwnReasons.postfixes.split(',');
