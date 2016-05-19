@@ -2,12 +2,13 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      1.9.1
+// @version      1.99.99
 // @author       CJMAXiK
 // @icon         http://truckersmp.com/assets/images/favicon.png
 // @match        *://truckersmp.com/*/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js
+// @require      https://www.gstatic.com/firebasejs/live/3.0/firebase.js
 // @run-at       document-idle
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setClipboard
@@ -27,9 +28,45 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 
-var version = "1.9.1";
+var version = "2.0.0";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 $('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + version + '</span> <a href="https://www.jmdev.ca/url/" target="_blank"><i class="fa fa-link" data-toggle="tooltip" title="URL Shortener"></i></a> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected" data-toggle="popover" data-trigger="focus" title="YAY! v.' + version + ' has been deployed!" data-content="Your handy-dandy script just updated! See what you get?"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a>  <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
+
+// ===== Firebase =====
+var config = {
+    apiKey: "AIzaSyBvswUAgDHFFw6pthk6nr7A414XHzRFqUw",
+    authDomain: "project-9116129543653340625.firebaseapp.com",
+    databaseURL: "https://project-9116129543653340625.firebaseio.com",
+    storageBucket: "project-9116129543653340625.appspot.com",
+};
+firebase.initializeApp(config);
+var database = firebase.database();
+
+function writeUserData(steamapi, prefixes, reasons, postfixes, declines) {
+    if (confirm("Do you really want to save this data into Cloud?")) {
+        firebase.database().ref('admin/' + steamapi).set({
+            prefixes: prefixes,
+            reasons: reasons,
+            postfixes: postfixes,
+            declines: declines
+        });
+        alert("YAY! Remember to Save & Reload!");
+    }
+};
+
+function readUserData(steamapi) {
+    if (confirm("Do you really want to download data from Cloud? This action rewrite all current data!")) {
+        firebase.database().ref('admin/' + steamapi).once('value').then(function(snapshot) {
+            item = snapshot.val();
+            if (item) {
+                storage.setItem('OwnReasons', JSON.stringify(item));
+                location.reload();
+            } else {
+                alert("Your Cloud is empty. Try to save some data :)");
+            }
+        });
+    };
+}
 
 // ===== Bootstrapping =====
 var now = moment.utc();
@@ -69,6 +106,7 @@ var storage = localStorage;
 var steamapi = storage.getItem('SteamApi');
 var last_version = storage.getItem('truckersmp-reports-last_version');
 var OwnReasons = JSON.parse(storage.getItem('OwnReasons'));
+var report_language = $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(7) > td:nth-child(2)').text().trim();
 
 // ===== Versioning =====
 if (version != last_version) {
@@ -78,11 +116,27 @@ if (version != last_version) {
     setTimeout(function() {
         'use strict';
         $('#version_detected').popover('hide');
-    }, 3000);
+    }, 4000);
     $('h3.popover-title').css('background-color', '#555').css('font-weight', 'bold');
 } else {
     storage.setItem('truckersmp-reports-last_version', version);
 }
+
+// ===== Comment Language =====
+// alert(report_language);
+switch (report_language) {
+    case 'English': comment = 'Thank you for the report :)'; break;
+    case 'German': comment = 'Wir bedanken uns für deinen Report :)'; break;
+    case 'Turkish': comment = 'Raporun için teşekkür ederim :)'; break;
+    case 'Norwegian': comment = 'Takk for rapporten :)'; break;
+    case 'Spanish': comment = 'Muchas gracias por tu reporte :)'; break;
+    case 'Dutch': comment = 'Bedankt voor de report :)'; break;
+    case 'Polish': comment = 'Dziękuję za report :)'; break;
+    case 'Russian': comment = 'Спасибо за репорт :)'; break;
+    case 'French': comment = 'Merci pour le rapport :)'; break;
+    default: comment = 'Thank you for the report :)';
+}
+$('#confirm-accept > div > div > form > div.modal-body > div:nth-child(7) > textarea').val(comment);
 
 // ==== OwnReasons buttons
 var default_OwnReasons = JSON.stringify({
@@ -111,7 +165,7 @@ var settings_modal = '<div class="modal fade ets2mp-modal" id="script-settings" 
             '<div class="modal-body">'+
                 '<div class="form-group">'+
                     '<label for="steamapi_id">Steam Web API Key (<a href="http://jmdev.ca/url?l=12a81" target="_blank">how to get it?</a>)</label> <input class="form-control" name="steamapi_id" id="steamapi_id" placeholder="Paste it here or Kappa" type="text" value="' + steamapi + '">'+
-                    'If you don\'t want to use Steam integration, click on Kappa <img src="http://s019.radikal.ru/i600/1603/56/506aefc956d7.png" id="Kappa">' +
+                    'This key is needed for Steam integration AND Cloud sync (key is your credentials). If you don\'t want to use Steam integration, click on Kappa <img src="http://s019.radikal.ru/i600/1603/56/506aefc956d7.png" id="Kappa">' +
                 '</div>'+
                 '<hr>'+
                 '<h3>Own Reasons Buttons <small>(use Comma <kbd>,</kbd> to split variants and Vertical slash <kbd>|</kbd> for separator)</small></h3>' +
@@ -129,7 +183,13 @@ var settings_modal = '<div class="modal fade ets2mp-modal" id="script-settings" 
                 '</div>'+
             '</div>'+
             '<div class="modal-footer">'+
-                '<button class="btn btn-default" data-dismiss="modal" type="button">Cancel</button> <button class="btn btn-danger" id="script-settings-submit">Save & Reload page</button>'+
+                '<div class="btn-toolbar pull-right">' +
+                    '<button class="btn btn-danger" id="script-settings-submit">Save & Reload page</button>     '+
+                    '<div class="btn-group">' +
+                        '<button class="btn btn-primary" id="script-settings-write-data" data-toggle="tooltip" title="Save OwnReasons into Cloud"><i class="fa fa-cloud-upload"></i></button>'+
+                        '<button class="btn btn-primary" id="script-settings-read-data" data-toggle="tooltip" title="Download OwnReasons from Cloud"><i class="fa fa-cloud-download"></i></button>'+
+                    '</div>' +
+                '</div>' +
             '</div>'+
         '</div>'+
     '</div>'+
@@ -141,6 +201,24 @@ $('#plusreason-own-Prefixes').val(OwnReasons.prefixes);
 $('#plusreason-own-Reasons').val(OwnReasons.reasons);
 $('#plusreason-own-Postfixes').val(OwnReasons.postfixes);
 $('#plusreason-own-Declines').val(OwnReasons.declines);
+
+$('#script-settings-write-data').on('click', function(event) {
+    'use strict';
+    event.preventDefault();
+
+    var new_prefixes = $('#plusreason-own-Prefixes').val().trim();
+    var new_reasons = $('#plusreason-own-Reasons').val().trim();
+    var new_postfixes = $('#plusreason-own-Postfixes').val().trim();
+    var new_declines = $('#plusreason-own-Declines').val().trim();
+
+    writeUserData(steamapi, new_prefixes, new_reasons, new_postfixes, new_declines);
+})
+
+$('#script-settings-read-data').on('click', function(event) {
+    'use strict';
+    event.preventDefault();
+    readUserData(steamapi);
+})
 
 $('#script-settings-submit').on('click', function(event) {
     'use strict';
@@ -472,7 +550,6 @@ function construct_buttons(OwnReasons, if_decline) {
  *
  * Queries Helper
  */
-
 function GM_XHR() {
     this.type = null;
     this.url = null;
