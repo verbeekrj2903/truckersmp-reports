@@ -166,18 +166,43 @@ switch (report_language) {
 $('#confirm-accept > div > div > form > div.modal-body > div:nth-child(7) > textarea').val(comment);
 
 // ===== Unnessesary Bans Fetching =====
+var bans_count = 0;
+var expired_bans_count = 0;
 $("body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > table > tbody > tr > td:nth-child(2)").each(function(index) {
-    var expires = moment($(this).text());
+    if ($(this).text() == 'Never') {
+        var expires = moment("9999-12-31");
+    } else {
+        var expires = moment($(this).text())
+    };
     if (expires.year() == '2001') {
         expires.year(now.year());
     };
 
     if (expires.isValid()) {
         if (Math.abs(expires.diff(now, 'd')) >= 365) {
+            $(this).parent().hide();
+            $(this).parent().addClass('expired_bans');
             $(this).parent().find('td').css('color', '#555');
+            expired_bans_count++;
+        } else {
+            bans_count++;
         };
     };
 });
+
+$('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > h4').html(bans_count + ' bans');
+
+if (bans_count > 3) {
+    $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > h4').css('color', 'red');
+};
+
+if (expired_bans_count > 0) {
+    $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > h4').html(bans_count + ' bans | <a href="#" id="expired_bans_toogler">Show/hide bans > 12 months </a>');
+    $('#expired_bans_toogler').on('click', function(event) {
+        event.preventDefault();
+        $('.expired_bans').fadeToggle('slow');
+    });
+};
 
 // ==== OwnReasons buttons
 var default_OwnReasons = JSON.stringify({
@@ -532,13 +557,13 @@ function construct_buttons(OwnReasons, if_decline) {
     var html = '<br>';
 
     if (if_decline) {
-        console.log(typeof OwnReasons);
+        // console.log(typeof OwnReasons);
         var declines = OwnReasons.declines.split(',');
 
         html += each_type('Declines', declines);
         html += '<button type="button" class="btn btn-link" id="decline_clear">Clear</button>';
     } else {
-        console.log(typeof OwnReasons);
+        // console.log(typeof OwnReasons);
         var prefixes = OwnReasons.prefixes.split(',');
         var reasons = OwnReasons.reasons.split(',');
         var postfixes = OwnReasons.postfixes.split(',');
