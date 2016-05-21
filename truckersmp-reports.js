@@ -6,6 +6,7 @@
 // @author       CJMAXiK
 // @icon         http://truckersmp.com/assets/images/favicon.png
 // @match        *://truckersmp.com/*/reports/view/*
+// @include      *://truckersmp.com/*/reports/view/*
 // @homepageURL  https://openuserjs.org/scripts/cjmaxik/TruckersMP_Reports_Improved
 // @require      https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js
 // @require      https://www.gstatic.com/firebasejs/live/3.0/firebase.js
@@ -17,10 +18,12 @@
 // @connect      steampowered.com
 // @connect      steamcommunity.com
 // @connect      jmdev.ca
+// @connect      firebaseio.com
+// @connect      firebaseapp.com
+// @connect      appspot.com
 // @connect      *
 // @updateURL    https://openuserjs.org/meta/cjmaxik/TruckersMP_Reports_Improved.meta.js
 // @noframes
-// @nocompat     Chrome
 // @copyright    2016, CJMAXiK (http://cjmaxik.ru/)
 // ==/UserScript==
 // ==OpenUserJS==
@@ -44,19 +47,21 @@ var database = firebase.database();
 
 function writeUserData(steamapi, prefixes, reasons, postfixes, declines) {
     if (confirm("Do you really want to save this data into Cloud?")) {
-        firebase.database().ref('admin/' + steamapi).set({
+        database.ref('admin/' + steamapi).remove();
+        database.ref('admin/' + steamapi).set({
             prefixes: prefixes,
             reasons: reasons,
             postfixes: postfixes,
             declines: declines
         });
         alert("YAY! Remember to Save & Reload!");
+        // alert(firebase.database().error());
     }
 };
 
 function readUserData(steamapi) {
     if (confirm("Do you really want to download data from Cloud? This action rewrite all current data!")) {
-        firebase.database().ref('admin/' + steamapi).once('value').then(function(snapshot) {
+        database.ref('admin/' + steamapi).once('value').then(function(snapshot) {
             item = snapshot.val();
             if (item) {
                 storage.setItem('OwnReasons', JSON.stringify(item));
