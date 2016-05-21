@@ -172,8 +172,14 @@ var expired_bans_count = 0;
 $("body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > table > tbody > tr > td:nth-child(2)").each(function(index) {
     if ($(this).text() == 'Never') {
         var expires = moment("9999-12-31");
+    } else if ($(this).text().indexOf("Today") !== -1) {
+        var expires = now;
+    } else if ($(this).text().indexOf("Tomorrow") !== -1) {
+        var expires = now.add(1, 'd');
+    } else if ($(this).text().indexOf("Yesterday") !== -1) {
+        var expires = now.add(1, 'd');
     } else {
-        var expires = moment($(this).text())
+        var expires = moment($(this).text());
     };
     if (expires.year() == '2001') {
         expires.year(now.year());
