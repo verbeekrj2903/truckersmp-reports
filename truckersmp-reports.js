@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      2.1.7
+// @version      2.1.8
 // @author       CJMAXiK
 // @icon         http://truckersmp.com/assets/images/favicon.png
 // @match        *://truckersmp.com/*/reports/view/*
@@ -31,7 +31,7 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 
-var version = "2.1.7";
+var version = "2.1.8";
 console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
 $('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + version + '</span> <a href="https://www.jmdev.ca/url/" target="_blank"><i class="fa fa-link" data-toggle="tooltip" title="URL Shortener"></i></a> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected" data-toggle="popover" data-trigger="focus" title="YAY! v.' + version + ' has been deployed!" data-content="Your handy-dandy script just updated! See what you get?"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a>  <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
 
@@ -169,25 +169,35 @@ $('#confirm-accept > div > div > form > div.modal-body > div:nth-child(7) > text
 // ===== Unnessesary Bans Fetching =====
 var bans_count = 0;
 var expired_bans_count = 0;
-$("body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > table > tbody > tr > td:nth-child(1)").each(function(index) {
-    if ($(this).text().indexOf("Today") !== -1) {
-        var expires = now;
-    } else if ($(this).text().indexOf("Tomorrow") !== -1) {
-        var expires = now.add(1, 'd');
-    } else if ($(this).text().indexOf("Yesterday") !== -1) {
-        var expires = now.add(1, 'd');
+$("body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > table > tbody > tr").each(function(index) {
+    // console.log($(this).children('td:nth-child(1)').text());
+
+    var banned_time_td = $(this).children('td:nth-child(1)').text();
+    var banned_reason_td = $(this).children('td:nth-child(3)').text();
+
+    if (banned_time_td.indexOf("Today") !== -1) {
+        var banned_time = now;
+    } else if (banned_time_td.indexOf("Tomorrow") !== -1) {
+        var banned_time = now.add(1, 'd');
+    } else if (banned_time_td.indexOf("Yesterday") !== -1) {
+        var banned_time = now.add(1, 'd');
     } else {
-        var expires = moment($(this).text());
-    };
-    if (expires.year() == '2001') {
-        expires.year(now.year());
+        var banned_time = moment(banned_time_td);
     };
 
-    if (expires.isValid()) {
-        if (Math.abs(expires.diff(now, 'd')) >= 365) {
-            $(this).parent().hide();
-            $(this).parent().addClass('expired_bans');
-            $(this).parent().find('td').css('color', '#555');
+    if (banned_time.year() == '2001') {
+        banned_time.year(now.year());
+    };
+
+    if (banned_reason_td == '@BANBYMISTAKE') {
+        banned_time.year('1998');
+    };
+
+    if (banned_time.isValid()) {
+        if (Math.abs(banned_time.diff(now, 'd')) >= 365) {
+            $(this).hide();
+            $(this).addClass('expired_bans');
+            $(this).find('td').css('color', '#555');
             expired_bans_count++;
         } else {
             bans_count++;
@@ -195,17 +205,24 @@ $("body > div.wrapper > div.container.content > div > div.clearfix > div:nth-chi
     };
 });
 
-$('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > h4').html(bans_count + ' bans');
+$('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > h4').html(bans_count + ' counted bans');
 
 if (bans_count >= 3) {
     $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > h4').css('color', 'red');
 };
 
 if (expired_bans_count > 0) {
-    $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > h4').html(bans_count + ' bans | <a href="#" id="expired_bans_toogler">Show/hide bans > 12 months </a>');
-    $('#expired_bans_toogler').on('click', function(event) {
+    $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > h4').html(bans_count + ' counted bans <a href="#" id="expired_bans_toggler"><i class="fa fa-toggle-off" data-toggle="tooltip" title="Show/hide bans further than 12 months and @BANBYMISTAKE"></i></a>');
+    $('#expired_bans_toggler').on('click', function(event) {
         event.preventDefault();
         $('.expired_bans').fadeToggle('slow');
+        if ($('#expired_bans_toggler > i').hasClass('fa-toggle-off')) {
+            $('#expired_bans_toggler > i').removeClass('fa-toggle-off');
+            $('#expired_bans_toggler > i').addClass('fa-toggle-on');
+        } else {
+            $('#expired_bans_toggler > i').removeClass('fa-toggle-on');
+            $('#expired_bans_toggler > i').addClass('fa-toggle-off');
+        }
     });
 };
 
