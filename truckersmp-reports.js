@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      2.1.9
+// @version      2.2.0
 // @author       CJMAXiK
 // @icon         http://truckersmp.com/assets/images/favicon.png
 // @match        *://truckersmp.com/*/reports/view/*
@@ -31,9 +31,39 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 
-var version = "2.1.9";
-console.log("TruckersMP Reports Improved INBOUND! Question - to @cjmaxik on Slack!");
-$('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + version + '</span> <a href="https://www.jmdev.ca/url/" target="_blank"><i class="fa fa-link" data-toggle="tooltip" title="URL Shortener"></i></a> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected" data-toggle="popover" data-trigger="focus" title="YAY! v.' + version + ' has been deployed!" data-content="Your handy-dandy script just updated! See what you get?"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a>  <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
+var version = "2.2.0";
+console.log("TruckersMP Reports Improved v" + version + " INBOUND! Question - to @cjmaxik on Slack!");
+
+var new_version_changes = [
+    "New version modal with changelog",
+    "Counted bans works ONLY FOR ENGLISH LANGUAGE!"
+];
+var new_version_changelog = '';
+$(new_version_changes).each(function(index, el) {
+    new_version_changelog += '<li>' + el + '</li>';
+});
+
+var new_version_modal = '<div class="modal fade" tabindex="-1" role="dialog" id="new_version_modal">' +
+  '<div class="modal-dialog">' +
+    '<div class="modal-content">' +
+      '<div class="modal-header">' +
+        '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+        '<h4 class="modal-title">New version ' + version + ' deployed!</h4>' +
+      '</div>' +
+      '<div class="modal-body">' +
+        '<h2>Changelog:</h2>' +
+        '<ul>' + new_version_changelog + '</ul>' +
+        '<p>Previous changes & all the changes - <a href="http://bit.ly/BlameAnybody" target="_blank">here</a></p>' +
+      '</div>' +
+      '<div class="modal-footer">' +
+        '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
+      '</div>' +
+    '</div>' +
+  '</div>' +
+'</div>';
+$(new_version_modal).insertBefore('.footer-v1');
+
+$('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + version + '</span> <a href="https://www.jmdev.ca/url/" target="_blank"><i class="fa fa-link" data-toggle="tooltip" title="URL Shortener"></i></a> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a>  <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
 
 // ===== Firebase =====
 var config = {
@@ -139,12 +169,7 @@ var report_language = $('body > div.wrapper > div.container.content > div > div.
 // ===== Versioning =====
 if (version != last_version) {
     storage.setItem('truckersmp-reports-last_version', version);
-    $('#version_detected').popover('show');
-    $('#version_detected').popover('show');
-    setTimeout(function() {
-        'use strict';
-        $('#version_detected').popover('hide');
-    }, 4000);
+    $('#new_version_modal').modal();
     $('h3.popover-title').css('background-color', '#555').css('font-weight', 'bold');
 } else {
     storage.setItem('truckersmp-reports-last_version', version);
