@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      2.2.0
+// @version      2.2.1
 // @author       CJMAXiK
 // @icon         http://truckersmp.com/assets/images/favicon.png
 // @match        *://truckersmp.com/*/reports/view/*
@@ -31,12 +31,11 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 
-var version = "2.2.0";
+var version = "2.2.1";
 console.log("TruckersMP Reports Improved v" + version + " INBOUND! Question - to @cjmaxik on Slack!");
 
 var new_version_changes = [
-    "New version modal with changelog",
-    "Counted bans works ONLY FOR ENGLISH LANGUAGE!"
+    "HTML escaping in Steam info (for the security!)"
 ];
 var new_version_changelog = '';
 $(new_version_changes).each(function(index, el) {
@@ -48,10 +47,10 @@ var new_version_modal = '<div class="modal fade" tabindex="-1" role="dialog" id=
     '<div class="modal-content">' +
       '<div class="modal-header">' +
         '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-        '<h4 class="modal-title">New version ' + version + ' deployed!</h4>' +
+        '<h2 class="modal-title">New version ' + version + ' deployed!</h2>' +
       '</div>' +
       '<div class="modal-body">' +
-        '<h2>Changelog:</h2>' +
+        '<h4>Changelog:</h4>' +
         '<ul>' + new_version_changelog + '</ul>' +
         '<p>Previous changes & all the changes - <a href="http://bit.ly/BlameAnybody" target="_blank">here</a></p>' +
       '</div>' +
@@ -253,7 +252,12 @@ if (window.location.pathname.indexOf("en_US") == '1') {
     };
 };
 
-// ==== OwnReasons buttons
+// ==== Table Improving ====
+$('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr > td:nth-child(1)').each(function(index, el) {
+    $(this).css('font-weight', 'bold');
+});
+
+// ==== OwnReasons buttons ====
 var default_OwnReasons = JSON.stringify({
     prefixes: "Intentional",
     reasons: "Ramming, Blocking, Wrong Way, Insulting, Trolling, Reckless Driving, Offensive language, Griefing, Driving without lights, Overtaking at EP, |, Change your Steam name and make a ban appeal",
@@ -388,8 +392,9 @@ if (steamapi === "Kappa") {
         type: 'GET',
         success: function(val){
             'use strict';
+            console.log(val);
             var player_data = val;
-            var steam_name = player_data.response.players[0].personaname;
+            var steam_name = escapeHTML(player_data.response.players[0].personaname);
             var steam_link = '<span id="steam_LOL"> aka <a href="http://steamcommunity.com/profiles/' + steam_id + '" target="_blank"><kbd>' + steam_name + '</kbd> <img src="'+ player_data.response.players[0].avatar + '" class="img-rounded"></a></span>';
             $(steam_link).insertAfter('tr:nth-child(2) > td:nth-child(2) > a');
 
@@ -402,7 +407,7 @@ if (steamapi === "Kappa") {
                     var aliases = "";
                     if (!$.isEmptyObject(steam_aliases)) {
                         for (var key in steam_aliases) {
-                            aliases += '<kbd  data-toggle="tooltip" title="' + steam_aliases[key].timechanged + '">' + steam_aliases[key].newname + '</kbd>   ';
+                            aliases += '<kbd  data-toggle="tooltip" title="' + steam_aliases[key].timechanged + '">' + escapeHTML(steam_aliases[key].newname) + '</kbd>   ';
                         }
                         aliases = '<tr><td>Aliases</td><td>'+ aliases +'</td></tr>';
                         $(aliases).insertAfter('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2)');
@@ -725,4 +730,8 @@ function GM_XHR() {
             }
         });
     };
+}
+
+function escapeHTML(s) {
+    return s.replace(/&(?!\w+;)/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
