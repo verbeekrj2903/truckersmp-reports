@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      2.3.0
+// @version      2.3.2
 // @author       CJMAXiK
 // @icon         http://truckersmp.com/assets/images/favicon.png
 // @match        *://truckersmp.com/*/reports/view/*
@@ -31,15 +31,18 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 
-var version = "2.3.0";
+var version = "2.3.2";
 console.log("TruckersMP Reports Improved v" + version + " INBOUND! Question - to @cjmaxik on Slack!");
 
 var new_version_changes = [
     "URL Shorter improvements: if link length < 30 then URL will be copied but not to be shorted",
-    "Last active (not permanent) ban is highlighted"
+    "Last active (not permanent) ban is highlighted",
+    "Perpetrator nickname && report number in title",
+    "Other fixes"
 ];
 var new_version_changelog = '';
 $(new_version_changes).each(function(index, el) {
+    'use strict';
     new_version_changelog += '<li>' + el + '</li>';
 });
 
@@ -63,22 +66,24 @@ var new_version_modal = '<div class="modal fade" tabindex="-1" role="dialog" id=
 '</div>';
 $(new_version_modal).insertBefore('.footer-v1');
 
-$('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + version + '</span> <a href="https://www.jmdev.ca/url/" target="_blank"><i class="fa fa-link" data-toggle="tooltip" title="URL Shortener"></i></a> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a>  <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
+$('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + version + '</span> <a href="https://www.jmdev.ca/url/" target="_blank" style="display:none;"><i class="fa fa-link" data-toggle="tooltip" title="URL Shortener"></i></a> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a>  <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
+$(document).prop('title', '"' + $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2) > td:nth-child(2) > a').text() + '" - ' + $('body > div.wrapper > div.breadcrumbs > div > ul > li.active').text());
 
 // ===== Firebase =====
 var config = {
     apiKey: "AIzaSyBvswUAgDHFFw6pthk6nr7A414XHzRFqUw",
     authDomain: "project-9116129543653340625.firebaseapp.com",
     databaseURL: "https://project-9116129543653340625.firebaseio.com",
-    storageBucket: "project-9116129543653340625.appspot.com",
+    storageBucket: "project-9116129543653340625.appspot.com"
 };
 firebase.initializeApp(config);
 var database = firebase.database();
 
 var connectedRef = database.ref(".info/connected");
 function isConnected() {
+    'use strict';
     var connection;
-   connectedRef.on("value", function(snap) {
+    connectedRef.on("value", function(snap) {
         if (snap.val() === true) {
             connection = true;
         } else {
@@ -252,7 +257,7 @@ if (window.location.pathname.indexOf("en_US") == '1') {
         });
     };
 
-    if ($('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(5) > i').hasClass('fa-check') && $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(2)').text != 'Never') {
+    if ($('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(5) > i').hasClass('fa-check') && $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(2)').text() != 'Never') {
         $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > table > tbody > tr:nth-child(2)').children('td').css({
             'color': '#d43f3a'
         });
