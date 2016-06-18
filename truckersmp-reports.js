@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      2.2.1
+// @version      2.3.0
 // @author       CJMAXiK
 // @icon         http://truckersmp.com/assets/images/favicon.png
 // @match        *://truckersmp.com/*/reports/view/*
@@ -31,11 +31,12 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 
-var version = "2.2.1";
+var version = "2.3.0";
 console.log("TruckersMP Reports Improved v" + version + " INBOUND! Question - to @cjmaxik on Slack!");
 
 var new_version_changes = [
-    "HTML escaping in Steam info (for the security!)"
+    "URL Shorter improvements: if link length < 30 then URL will be copied but not to be shorted",
+    "Last active (not permanent) ban is highlighted"
 ];
 var new_version_changelog = '';
 $(new_version_changes).each(function(index, el) {
@@ -145,7 +146,7 @@ $('.content').each(function(){
     'use strict';
     var str = $(this).html();
     var regex = /((http|https):\/\/([\w\-.]+)\/([^< )\s,\[])+)/gi;
-    var replaced_text = str.replace(regex, '<a href="$1" target="_blank" class="replaced">$1</a> <a href="#" class="jmdev_ca" data-link="$1"><i class="fa fa-link" data-toggle="tooltip" title="Click on me to get the shorter version to your clipboard"></i></a>');
+    var replaced_text = str.replace(regex, '<a href="$1" target="_blank" class="replaced">$1</a> <a href="#" class="jmdev_ca" data-link="$1"><i class="fa fa-copy" data-toggle="tooltip" title="Shorted + to clipboard"></i></a> <a href="#" class="jmdev_ca" data-link="$1"><i class="fa fa-check" data-toggle="tooltip" title="Shorted + to clipboard" style="display: none;"></i></a>');
     $(this).html(replaced_text);
 });
 
@@ -233,7 +234,7 @@ if (window.location.pathname.indexOf("en_US") == '1') {
     $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > h4').html(bans_count + ' counted bans');
 
     if (bans_count >= 3) {
-        $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > h4').css('color', 'red');
+        $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > h4').css('color', '#d43f3a');
     };
 
     if (expired_bans_count > 0) {
@@ -248,6 +249,12 @@ if (window.location.pathname.indexOf("en_US") == '1') {
                 $('#expired_bans_toggler > i').removeClass('fa-toggle-on');
                 $('#expired_bans_toggler > i').addClass('fa-toggle-off');
             }
+        });
+    };
+
+    if ($('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(5) > i').hasClass('fa-check') && $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(2)').text != 'Never') {
+        $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(2) > table > tbody > tr:nth-child(2)').children('td').css({
+            'color': '#d43f3a'
         });
     };
 };
@@ -508,30 +515,29 @@ $('a.jmdev_ca').on('click', function(event) {
     $("#loading-spinner").show();
 
     var link = encodeURIComponent($(this).data("link"));
-    var length = link.length;
+    var length = ($(this).data("link")).length;
 
-    if (length < 27) {
-        result = confirm("This URL is short enough. Do you really want it?");
-        if (!result) {
-            return false;
-        }
-    };
-
-    $.ajax({
-        url: "http://jmdev.ca/url/algo.php?method=insert&url=" + link,
-        xhr: function(){return new GM_XHR();},
-        type: 'GET',
-        success: function(val) {
-            GM_setClipboard('http://jmdev.ca/url/?l=' + val.result.url_short);
-            GM_notification('This is a success message! Check your clipboard!');
-        },
-        error: function() {
-            alert('Looks like we have a problem with URL shortener... Try again!');
-        },
-        complete: function() {
-            $("#loading-spinner").hide();
-        }
-    });
+    if (length < 30) {
+        GM_setClipboard($(this).data("link"));
+        GM_notification('This URL is short enough. Check your clipboard!');
+        $("#loading-spinner").hide();
+    } else {
+        $.ajax({
+            url: "http://jmdev.ca/url/algo.php?method=insert&url=" + link,
+            xhr: function(){return new GM_XHR();},
+            type: 'GET',
+            success: function(val) {
+                GM_setClipboard('http://jmdev.ca/url/?l=' + val.result.url_short);
+                GM_notification('URL just shorted! Check your clipboard!');
+            },
+            error: function() {
+                alert('Looks like we have a problem with URL shortener... Try again!');
+            },
+            complete: function() {
+                $("#loading-spinner").hide();
+            }
+        });
+    }
 });
 
 // ===== DateTime and Reason inputs checking =====
