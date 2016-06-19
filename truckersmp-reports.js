@@ -2,7 +2,7 @@
 // @name         TruckersMP Reports Improved
 // @description  Only for TruckersMP Admins
 // @namespace    http://truckersmp.com/
-// @version      2.3.2
+// @version      2.3.3
 // @author       CJMAXiK
 // @icon         http://truckersmp.com/assets/images/favicon.png
 // @match        *://truckersmp.com/*/reports/view/*
@@ -31,20 +31,32 @@
 // ==/OpenUserJS==
 /* jshint -W097 */
 
-var version = "2.3.2";
+var version = "2.3.3";
 console.log("TruckersMP Reports Improved v" + version + " INBOUND! Question - to @cjmaxik on Slack!");
 
-var new_version_changes = [
+var new_version_features = [
     "URL Shorter improvements: if link length < 30 then URL will be copied but not to be shorted",
     "Last active (not permanent) ban is highlighted",
-    "Perpetrator nickname && report number in title",
+    "Perpetrator <i>Steam</i> nickname && report number in title"
+];
+
+var new_version_changes = [
+    "Links parser fixes",
     "Other fixes"
 ];
+
 var new_version_changelog = '';
+new_version_changelog += '<h5>New features since last major update:</h5><ul>';
+$(new_version_features).each(function(index, el) {
+    'use strict';
+    new_version_changelog += '<li>' + el + '</li>';
+});
+new_version_changelog += '</ul><br><h5>Changes since last minor version:</h5><ul>';
 $(new_version_changes).each(function(index, el) {
     'use strict';
     new_version_changelog += '<li>' + el + '</li>';
 });
+new_version_changelog += '</ul>';
 
 var new_version_modal = '<div class="modal fade" tabindex="-1" role="dialog" id="new_version_modal">' +
   '<div class="modal-dialog">' +
@@ -55,7 +67,7 @@ var new_version_modal = '<div class="modal fade" tabindex="-1" role="dialog" id=
       '</div>' +
       '<div class="modal-body">' +
         '<h4>Changelog:</h4>' +
-        '<ul>' + new_version_changelog + '</ul>' +
+        new_version_changelog +
         '<p>Previous changes & all the changes - <a href="http://bit.ly/BlameAnybody" target="_blank">here</a></p>' +
       '</div>' +
       '<div class="modal-footer">' +
@@ -67,7 +79,6 @@ var new_version_modal = '<div class="modal fade" tabindex="-1" role="dialog" id=
 $(new_version_modal).insertBefore('.footer-v1');
 
 $('body > div.wrapper > div.breadcrumbs > div > h1').append(' Improved <span class="badge" data-toggle="tooltip" title="by @cjmaxik">' + version + '</span> <a href="https://www.jmdev.ca/url/" target="_blank" style="display:none;"><i class="fa fa-link" data-toggle="tooltip" title="URL Shortener"></i></a> <a href="#" data-toggle="modal" data-target="#script-settings"><i class="fa fa-cog" data-toggle="tooltip" title="Script settings"></i></a> <a href="http://bit.ly/BlameAnybody" target="_blank" id="version_detected"><i class="fa fa-question" data-toggle="tooltip" title="Changelog"></i></a>  <i class="fa fa-spinner fa-spin" id="loading-spinner"></i>');
-$(document).prop('title', '"' + $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2) > td:nth-child(2) > a').text() + '" - ' + $('body > div.wrapper > div.breadcrumbs > div > ul > li.active').text());
 
 // ===== Firebase =====
 var config = {
@@ -389,6 +400,7 @@ $('#Kappa').on('click', function(event) {
 if (steamapi === "Kappa") {
     console.log(":O");
     $("body > div.wrapper > div.breadcrumbs > div > h1").append("<kbd>#blame" + $('body > div.wrapper > div.header > div.container > div > ul > li:nth-child(1) > a').html()+"</kbd>");
+    $(document).prop('title', '"' + $('body > div.wrapper > div.container.content > div > div.clearfix > div:nth-child(1) > table > tbody > tr:nth-child(2) > td:nth-child(2) > a').text() + '" - ' + $('body > div.wrapper > div.breadcrumbs > div > ul > li.active').text());
     $("#loading-spinner").hide();
     $(function () {
         'use strict';
@@ -428,6 +440,7 @@ if (steamapi === "Kappa") {
                     $(function () {
                         $('[data-toggle="tooltip"]').tooltip()
                     });
+                    $(document).prop('title', '"' + steam_name + '" - ' + $('body > div.wrapper > div.breadcrumbs > div > ul > li.active').text());
                 }
             });
         }
@@ -533,7 +546,7 @@ $('a.jmdev_ca').on('click', function(event) {
             type: 'GET',
             success: function(val) {
                 GM_setClipboard('http://jmdev.ca/url/?l=' + val.result.url_short);
-                GM_notification('URL just shorted! Check your clipboard!');
+                GM_notification('URL just being shorted! Check your clipboard!');
             },
             error: function() {
                 alert('Looks like we have a problem with URL shortener... Try again!');
